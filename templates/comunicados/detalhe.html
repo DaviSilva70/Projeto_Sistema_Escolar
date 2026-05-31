@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}{{ comunicado.titulo }} - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-megaphone"></i> Comunicado{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-megaphone"></i> {{ comunicado.titulo }}</h2>
+        <p class="page-subtitle">Publicado em {{ comunicado.criado_em|date:"d/m/Y H:i" }}</p>
+    </div>
+    <a href="{% url 'lista_comunicados' %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card-modern">
+            <div class="card-body-modern">
+                <div class="d-flex align-items-center gap-2 mb-4">
+                    <span class="badge-modern {% if comunicado.prioridade == 'alta' %}danger{% elif comunicado.prioridade == 'media' %}warning{% else %}info{% endif %}">
+                        Prioridade: {{ comunicado.get_prioridade_display }}
+                    </span>
+                </div>
+                <div style="white-space: pre-wrap; line-height: 1.8;">{{ comunicado.mensagem }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card-modern">
+            <div class="card-header-modern">
+                <h5><i class="bi bi-info-circle"></i> Informações</h5>
+            </div>
+            <div class="card-body-modern">
+                <ul class="info-list">
+                    <li>
+                        <div class="info-icon"><i class="bi bi-person"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Autor</div>
+                            <div class="info-value">{{ comunicado.autor.get_full_name }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-calendar"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Data de Publicação</div>
+                            <div class="info-value">{{ comunicado.criado_em|date:"d/m/Y H:i" }}</div>
+                        </div>
+                    </li>
+                    {% if comunicado.data_validade %}
+                    <li>
+                        <div class="info-icon"><i class="bi bi-calendar-x"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Validade</div>
+                            <div class="info-value">{{ comunicado.data_validade|date:"d/m/Y" }}</div>
+                        </div>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

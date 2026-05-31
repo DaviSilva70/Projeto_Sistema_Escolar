@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Relatório de Frequência - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-check2-square"></i> Relatório de Frequência{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-check2-square"></i> Relatório de Frequência</h2>
+        <p class="page-subtitle">Análise da frequência dos alunos</p>
+    </div>
+    <a href="{% url 'dashboard_relatorios' %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="card-modern">
+    <div class="card-body-modern">
+        <div class="empty-state">
+            <i class="bi bi-check2-square"></i>
+            <h5>Relatório em construção</h5>
+            <p>Este relatório será implementado com gráficos de frequência por turma e aluno.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

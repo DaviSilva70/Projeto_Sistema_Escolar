@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}{{ professor.user.get_full_name }} - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-person-workspace"></i> Perfil do Professor{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-person-workspace"></i> {{ professor.user.get_full_name }}</h2>
+        <p class="page-subtitle">Matrícula: {{ professor.matricula }} | Perfil completo</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'editar_professor' professor.pk %}" class="btn-modern btn-warning-modern">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        <a href="{% url 'lista_professores' %}" class="btn-modern btn-outline-modern">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card-modern">
+            <div class="card-body-modern profile-card">
+                {% if professor.user.foto %}
+                <img src="{{ professor.user.foto.url }}" alt="Foto" class="avatar avatar-xl" style="margin: 0 auto 16px; object-fit: cover;">
+                {% else %}
+                <div class="avatar avatar-xl" style="background: var(--success); margin: 0 auto 16px;">
+                    {{ professor.user.first_name.0 }}{{ professor.user.last_name.0 }}
+                </div>
+                {% endif %}
+                <h4>{{ professor.user.get_full_name }}</h4>
+                <p class="text-muted mb-3">{{ professor.especialidade|default:"Professor" }}</p>
+                {% if professor.ativo %}
+                <span class="badge-modern success"><span class="badge-dot"></span> Ativo</span>
+                {% else %}
+                <span class="badge-modern danger"><span class="badge-dot"></span> Inativo</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card-modern mb-4">
+            <div class="card-header-modern">
+                <h5><i class="bi bi-person-lines-fill"></i> Dados Profissionais</h5>
+            </div>
+            <div class="card-body-modern">
+                <ul class="info-list">
+                    <li>
+                        <div class="info-icon"><i class="bi bi-key"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Matrícula</div>
+                            <div class="info-value">{{ professor.matricula }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-credit-card"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">CPF</div>
+                            <div class="info-value">{{ professor.cpf }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-book"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Formação</div>
+                            <div class="info-value">{{ professor.formacao }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-star"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Especialidade</div>
+                            <div class="info-value">{{ professor.especialidade|default:"Não informado" }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-calendar-check"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Data de Admissão</div>
+                            <div class="info-value">{{ professor.data_admissao|date:"d/m/Y" }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-cash"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Salário</div>
+                            <div class="info-value">R$ {{ professor.salario|floatformat:2 }}</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block title %}Disciplinas - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-journal-text"></i> Disciplinas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-journal-text"></i> Gestão de Disciplinas</h2>
+        <p class="page-subtitle">Gerencie as disciplinas ministradas na escola</p>
+    </div>
+    <a href="{% url 'cadastro_disciplina' %}" class="btn-modern btn-primary-modern">
+        <i class="bi bi-plus-lg"></i> Nova Disciplina
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card primary">
+            <div class="stat-icon"><i class="bi bi-journal-text"></i></div>
+            <div class="stat-value">{{ disciplinas.count }}</div>
+            <div class="stat-label">Total de Disciplinas</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card success">
+            <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Obrigatórias</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card info">
+            <div class="stat-icon"><i class="bi bi-clock"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Horas/Total</div>
+        </div>
+    </div>
+</div>
+
+<div class="card-modern">
+    <div class="card-header-modern">
+        <h5><i class="bi bi-list-ul"></i> Lista de Disciplinas</h5>
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" class="form-control-modern" placeholder="Buscar disciplina..." id="searchInput" onkeyup="filtrarTabela()">
+        </div>
+    </div>
+    <div class="card-body-modern" style="padding: 0;">
+        <div class="table-responsive">
+            <table class="table-modern" id="tabelaDisciplinas">
+                <thead>
+                    <tr>
+                        <th>Disciplina</th>
+                        <th>Carga Horária</th>
+                        <th>Tipo</th>
+                        <th>Status</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for disciplina in disciplinas %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="avatar" style="background: {% cycle '#4f46e5' '#10b981' '#f59e0b' '#ef4444' '#0ea5e9' '#8b5cf6' %}">
+                                    {{ disciplina.nome.0 }}
+                                </div>
+                                <div>
+                                    <div class="fw-semibold">{{ disciplina.nome }}</div>
+                                    <small class="text-muted">{{ disciplina.descricao|truncatechars:50|default:"Sem descrição" }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge-modern info">{{ disciplina.carga_horaria }}h</span></td>
+                        <td>
+                            {% if disciplina.obrigatoria %}
+                            <span class="badge-modern primary">Obrigatória</span>
+                            {% else %}
+                            <span class="badge-modern dark">Optativa</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if disciplina.ativo %}
+                            <span class="badge-modern success"><span class="badge-dot"></span> Ativa</span>
+                            {% else %}
+                            <span class="badge-modern danger"><span class="badge-dot"></span> Inativa</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <div class="d-flex gap-1 justify-content-end">
+                                <a href="{% url 'detalhe_disciplina' disciplina.pk %}" class="btn-icon" title="Ver detalhes">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="bi bi-journal-text"></i>
+                                <h5>Nenhuma disciplina cadastrada</h5>
+                                <p>Comece cadastrando a primeira disciplina.</p>
+                                <a href="{% url 'cadastro_disciplina' %}" class="btn-modern btn-primary-modern mt-2">
+                                    <i class="bi bi-plus-lg"></i> Cadastrar Disciplina
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filtrarTabela() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#tabelaDisciplinas tbody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(input) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

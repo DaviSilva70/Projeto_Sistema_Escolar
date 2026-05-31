@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% block title %}Editar Aluno - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-pencil"></i> Editar Aluno{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-pencil"></i> Editar Aluno</h2>
+        <p class="page-subtitle">Atualize os dados de {{ aluno.user.get_full_name }}</p>
+    </div>
+    <a href="{% url 'detalhe_aluno' aluno.pk %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <!-- Dados do Aluno -->
+            <div class="card-modern mb-4">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-person"></i> Dados do Aluno</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Nome *</label>
+                                <input type="text" name="first_name" class="form-control-modern" value="{{ aluno.user.first_name }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Sobrenome *</label>
+                                <input type="text" name="last_name" class="form-control-modern" value="{{ aluno.user.last_name }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">RA *</label>
+                                <input type="text" name="ra" class="form-control-modern" value="{{ aluno.ra }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">CPF *</label>
+                                <input type="text" name="cpf" class="form-control-modern" value="{{ aluno.cpf }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">RG</label>
+                                <input type="text" name="rg" class="form-control-modern" value="{{ aluno.rg }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Data de Nascimento *</label>
+                                <input type="date" name="data_nascimento" class="form-control-modern" value="{{ aluno.data_nascimento|date:'Y-m-d' }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">E-mail</label>
+                                <input type="email" name="email" class="form-control-modern" value="{{ aluno.user.email }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Telefone</label>
+                                <input type="text" name="telefone" class="form-control-modern" value="{{ aluno.user.telefone }}">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label-modern">Endereço</label>
+                                <textarea name="endereco" class="form-control-modern" rows="2">{{ aluno.endereco }}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Status</label>
+                                <select name="ativo" class="form-control-modern">
+                                    <option value="True" {% if aluno.ativo %}selected{% endif %}>Ativo</option>
+                                    <option value="False" {% if not aluno.ativo %}selected{% endif %}>Inativo</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dados do Responsável -->
+            <div class="card-modern mb-4">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-person-check"></i> Responsável</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label-modern">Parentesco *</label>
+                                <select name="tipo_responsavel" id="tipoResponsavel" class="form-control-modern" required onchange="toggleFormResponsavel()">
+                                    <option value="">Selecione o parentesco</option>
+                                    {% for value, label in aluno.responsavel.TIPO_CHOICES %}
+                                    <option value="{{ value }}" {% if aluno.responsavel.tipo == value %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Nome Completo *</label>
+                                <input type="text" name="nome_responsavel" id="nomeResponsavel" class="form-control-modern" value="{{ aluno.responsavel.nome_completo }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">CPF *</label>
+                                <input type="text" name="cpf_responsavel" id="cpfResponsavel" class="form-control-modern" value="{{ aluno.responsavel.cpf }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Telefone *</label>
+                                <input type="text" name="telefone_responsavel" id="telefoneResponsavel" class="form-control-modern" value="{{ aluno.responsavel.telefone }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">E-mail</label>
+                                <input type="email" name="email_responsavel" id="emailResponsavel" class="form-control-modern" value="{{ aluno.responsavel.email }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Profissão</label>
+                                <input type="text" name="profissao_responsavel" id="profissaoResponsavel" class="form-control-modern" value="{{ aluno.responsavel.profissao }}">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label-modern">Endereço Completo *</label>
+                                <textarea name="endereco_responsavel" id="enderecoResponsavel" class="form-control-modern" rows="2" required>{{ aluno.responsavel.endereco }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-info-circle"></i> Informações</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="alert-modern warning">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>Atenção ao alterar dados importantes como RA e CPF.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 justify-content-end mt-4 mb-4">
+        <a href="{% url 'detalhe_aluno' aluno.pk %}" class="btn-modern btn-outline-modern">Cancelar</a>
+        <button type="submit" class="btn-modern btn-primary-modern">
+            <i class="bi bi-check-lg"></i> Salvar Alterações
+        </button>
+    </div>
+</form>
+{% endblock %}

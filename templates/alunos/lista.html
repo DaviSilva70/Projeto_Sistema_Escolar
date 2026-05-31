@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block title %}Alunos - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-people"></i> Alunos{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-people"></i> Gestão de Alunos</h2>
+        <p class="page-subtitle">Gerencie o cadastro de todos os alunos da escola</p>
+    </div>
+    <a href="{% url 'cadastro_aluno' %}" class="btn-modern btn-primary-modern">
+        <i class="bi bi-plus-lg"></i> Novo Aluno
+    </a>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card primary">
+            <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+            <div class="stat-value">{{ alunos.count }}</div>
+            <div class="stat-label">Total de Alunos</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card success">
+            <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Ativos</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card warning">
+            <div class="stat-icon"><i class="bi bi-clock-fill"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Pendentes</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card info">
+            <div class="stat-icon"><i class="bi bi-calendar-year"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Novos este mês</div>
+        </div>
+    </div>
+</div>
+
+<!-- Lista -->
+<div class="card-modern">
+    <div class="card-header-modern">
+        <h5><i class="bi bi-list-ul"></i> Lista de Alunos</h5>
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" class="form-control-modern" placeholder="Buscar aluno..." id="searchInput" onkeyup="filtrarTabela()">
+        </div>
+    </div>
+    <div class="card-body-modern" style="padding: 0;">
+        <div class="table-responsive">
+            <table class="table-modern" id="tabelaAlunos">
+                <thead>
+                    <tr>
+                        <th>Aluno</th>
+                        <th>RA</th>
+                        <th>CPF</th>
+                        <th>Responsável</th>
+                        <th>Data Nasc.</th>
+                        <th>Status</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for aluno in alunos %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                {% if aluno.user.foto %}
+                                <img src="{{ aluno.user.foto.url }}" alt="Foto" class="avatar" style="object-fit: cover;">
+                                {% else %}
+                                <div class="avatar" style="background: {% cycle '#4f46e5' '#0ea5e9' '#10b981' '#f59e0b' '#ef4444' '#8b5cf6' %}">
+                                    {{ aluno.user.first_name.0 }}{{ aluno.user.last_name.0 }}
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <div class="fw-semibold">{{ aluno.user.get_full_name }}</div>
+                                    <small class="text-muted">{{ aluno.user.email|default:"Sem e-mail" }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge-modern primary">{{ aluno.ra }}</span></td>
+                        <td>{{ aluno.cpf }}</td>
+                        <td>{{ aluno.responsavel.get_full_name|default:"-" }}</td>
+                        <td>{{ aluno.data_nascimento|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if aluno.ativo %}
+                            <span class="badge-modern success"><span class="badge-dot"></span> Ativo</span>
+                            {% else %}
+                            <span class="badge-modern danger"><span class="badge-dot"></span> Inativo</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <div class="d-flex gap-1 justify-content-end">
+                                <a href="{% url 'detalhe_aluno' aluno.pk %}" class="btn-icon" title="Ver detalhes">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{% url 'editar_aluno' aluno.pk %}" class="btn-icon" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="bi bi-people"></i>
+                                <h5>Nenhum aluno cadastrado</h5>
+                                <p>Comece cadastrando o primeiro aluno da escola.</p>
+                                <a href="{% url 'cadastro_aluno' %}" class="btn-modern btn-primary-modern mt-2">
+                                    <i class="bi bi-plus-lg"></i> Cadastrar Aluno
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filtrarTabela() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#tabelaAlunos tbody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(input) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

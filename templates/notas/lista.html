@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}Notas - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-clipboard-data"></i> Notas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-clipboard-data"></i> Gestão de Notas</h2>
+        <p class="page-subtitle">Lance e consulte as notas dos alunos</p>
+    </div>
+    <a href="{% url 'lancamento_notas' %}" class="btn-modern btn-primary-modern">
+        <i class="bi bi-plus-lg"></i> Lançar Notas
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card primary">
+            <div class="stat-icon"><i class="bi bi-clipboard-data"></i></div>
+            <div class="stat-value">{{ notas.count }}</div>
+            <div class="stat-label">Total de Notas</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card success">
+            <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Aprovados</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card danger">
+            <div class="stat-icon"><i class="bi bi-x-circle"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Reprovados</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card warning">
+            <div class="stat-icon"><i class="bi bi-percent"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Média Geral</div>
+        </div>
+    </div>
+</div>
+
+<div class="card-modern">
+    <div class="card-header-modern">
+        <h5><i class="bi bi-list-ul"></i> Notas Lançadas</h5>
+        <div class="d-flex gap-2">
+            <select class="form-control-modern" style="width: auto;">
+                <option>Todos os bimestres</option>
+                <option>1º Bimestre</option>
+                <option>2º Bimestre</option>
+                <option>3º Bimestre</option>
+                <option>4º Bimestre</option>
+            </select>
+        </div>
+    </div>
+    <div class="card-body-modern" style="padding: 0;">
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th>Aluno</th>
+                        <th>Disciplina</th>
+                        <th>Bimestre</th>
+                        <th>Tipo</th>
+                        <th>Nota</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for nota in notas %}
+                    <tr>
+                        <td>
+                            <div class="fw-semibold">{{ nota.aluno.user.get_full_name }}</div>
+                            <small class="text-muted">RA: {{ nota.aluno.ra }}</small>
+                        </td>
+                        <td>{{ nota.disciplina.nome }}</td>
+                        <td><span class="badge-modern primary">{{ nota.get_bimestre_display }}</span></td>
+                        <td><span class="badge-modern dark">{{ nota.get_tipo_avaliacao_display }}</span></td>
+                        <td>
+                            <span class="fw-bold {% if nota.nota >= 7 %}text-success{% elif nota.nota >= 5 %}text-warning{% else %}text-danger{% endif %}">
+                                {{ nota.nota|floatformat:1 }}
+                            </span>
+                        </td>
+                        <td>{{ nota.data_avaliacao|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="bi bi-clipboard-data"></i>
+                                <h5>Nenhuma nota lançada</h5>
+                                <p>Comece lançando as notas dos alunos.</p>
+                                <a href="{% url 'lancamento_notas' %}" class="btn-modern btn-primary-modern mt-2">
+                                    <i class="bi bi-plus-lg"></i> Lançar Notas
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Histórico de Frequência - {{ aluno.user.get_full_name }}{% endblock %}
+{% block page_title %}<i class="bi bi-clock-history"></i> Histórico de Frequência{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-clock-history"></i> Histórico de Frequência</h2>
+        <p class="page-subtitle">{{ aluno.user.get_full_name }} - RA: {{ aluno.ra }}</p>
+    </div>
+    <a href="{% url 'lista_frequencia' %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="card-modern">
+    <div class="card-body-modern" style="padding: 0;">
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Turma</th>
+                        <th>Status</th>
+                        <th>Justificativa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for freq in frequencias %}
+                    <tr>
+                        <td>{{ freq.data|date:"d/m/Y" }}</td>
+                        <td>{{ freq.turma.nome }}</td>
+                        <td>
+                            {% if freq.status == 'P' %}
+                            <span class="badge-modern success"><span class="badge-dot"></span> Presente</span>
+                            {% elif freq.status == 'F' %}
+                            <span class="badge-modern danger"><span class="badge-dot"></span> Ausente</span>
+                            {% elif freq.status == 'J' %}
+                            <span class="badge-modern info"><span class="badge-dot"></span> Justificado</span>
+                            {% else %}
+                            <span class="badge-modern warning"><span class="badge-dot"></span> Atrasado</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ freq.justificativa|default:"-" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <i class="bi bi-clock-history"></i>
+                                <h5>Nenhum registro encontrado</h5>
+                                <p>Este aluno ainda não possui registros de frequência.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

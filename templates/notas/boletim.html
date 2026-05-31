@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Boletim - {{ aluno.user.get_full_name }}{% endblock %}
+{% block page_title %}<i class="bi bi-card-list"></i> Boletim Escolar{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-card-list"></i> Boletim Escolar</h2>
+        <p class="page-subtitle">{{ aluno.user.get_full_name }} - RA: {{ aluno.ra }}</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn-modern btn-outline-modern" onclick="window.print()">
+            <i class="bi bi-printer"></i> Imprimir
+        </button>
+        <a href="{% url 'lista_notas' %}" class="btn-modern btn-outline-modern">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+
+<div class="card-modern">
+    <div class="card-body-modern" style="padding: 0;">
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th>Disciplina</th>
+                        <th class="text-center">1º Bim</th>
+                        <th class="text-center">2º Bim</th>
+                        <th class="text-center">3º Bim</th>
+                        <th class="text-center">4º Bim</th>
+                        <th class="text-center">Média</th>
+                        <th class="text-center">Situação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for nota in notas %}
+                    <tr>
+                        <td class="fw-semibold">{{ nota.disciplina.nome }}</td>
+                        <td class="text-center">
+                            {% if nota.bimestre == 1 %}
+                            <span class="fw-bold {% if nota.nota >= 7 %}text-success{% elif nota.nota >= 5 %}text-warning{% else %}text-danger{% endif %}">
+                                {{ nota.nota|floatformat:1 }}
+                            </span>
+                            {% else %}-{% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if nota.bimestre == 2 %}
+                            <span class="fw-bold {% if nota.nota >= 7 %}text-success{% elif nota.nota >= 5 %}text-warning{% else %}text-danger{% endif %}">
+                                {{ nota.nota|floatformat:1 }}
+                            </span>
+                            {% else %}-{% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if nota.bimestre == 3 %}
+                            <span class="fw-bold {% if nota.nota >= 7 %}text-success{% elif nota.nota >= 5 %}text-warning{% else %}text-danger{% endif %}">
+                                {{ nota.nota|floatformat:1 }}
+                            </span>
+                            {% else %}-{% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if nota.bimestre == 4 %}
+                            <span class="fw-bold {% if nota.nota >= 7 %}text-success{% elif nota.nota >= 5 %}text-warning{% else %}text-danger{% endif %}">
+                                {{ nota.nota|floatformat:1 }}
+                            </span>
+                            {% else %}-{% endif %}
+                        </td>
+                        <td class="text-center fw-bold">--</td>
+                        <td class="text-center">
+                            <span class="badge-modern dark">--</span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="bi bi-clipboard-data"></i>
+                                <h5>Nenhuma nota registrada</h5>
+                                <p>As notas deste aluno ainda não foram lançadas.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

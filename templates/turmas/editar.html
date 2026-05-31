@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Editar Turma - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-pencil"></i> Editar Turma{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-pencil"></i> Editar Turma</h2>
+        <p class="page-subtitle">Atualize os dados de {{ turma.nome }}</p>
+    </div>
+    <a href="{% url 'detalhe_turma' turma.pk %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-book"></i> Dados da Turma</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Nome da Turma *</label>
+                                <input type="text" name="nome" class="form-control-modern" value="{{ turma.nome }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Nível *</label>
+                                <select name="nivel" class="form-control-modern" required>
+                                    <option value="fundamental1" {% if turma.nivel == 'fundamental1' %}selected{% endif %}>Fundamental I</option>
+                                    <option value="fundamental2" {% if turma.nivel == 'fundamental2' %}selected{% endif %}>Fundamental II</option>
+                                    <option value="medio" {% if turma.nivel == 'medio' %}selected{% endif %}>Médio</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Série *</label>
+                                <input type="number" name="serie" class="form-control-modern" value="{{ turma.serie }}" min="1" max="9" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Turno *</label>
+                                <select name="turno" class="form-control-modern" required>
+                                    <option value="manha" {% if turma.turno == 'manha' %}selected{% endif %}>Manhã</option>
+                                    <option value="tarde" {% if turma.turno == 'tarde' %}selected{% endif %}>Tarde</option>
+                                    <option value="noite" {% if turma.turno == 'noite' %}selected{% endif %}>Noite</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Ano Letivo *</label>
+                                <input type="number" name="ano_letivo" class="form-control-modern" value="{{ turma.ano_letivo }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Sala</label>
+                                <input type="text" name="sala" class="form-control-modern" value="{{ turma.sala }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Capacidade</label>
+                                <input type="number" name="capacidade" class="form-control-modern" value="{{ turma.capacidade }}" min="1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 justify-content-end mt-4">
+        <a href="{% url 'detalhe_turma' turma.pk %}" class="btn-modern btn-outline-modern">Cancelar</a>
+        <button type="submit" class="btn-modern btn-primary-modern">
+            <i class="bi bi-check-lg"></i> Salvar Alterações
+        </button>
+    </div>
+</form>
+{% endblock %}

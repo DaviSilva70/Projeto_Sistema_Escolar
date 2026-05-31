@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Professor - Sistema Escolar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; font-family: 'Inter', sans-serif; }
+        .register-card { background: white; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden; }
+        .register-header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 32px; text-align: center; color: white; }
+        .register-body { padding: 32px; }
+        .photo-upload { width: 120px; height: 120px; border-radius: 50%; border: 3px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; margin: 0 auto 16px; overflow: hidden; background: #f8fafc; }
+        .photo-upload:hover { border-color: #10b981; background: rgba(16,185,129,0.05); }
+        .photo-upload img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-upload i { font-size: 2rem; color: #94a3b8; }
+        .form-label { font-size: 0.8rem; font-weight: 600; color: #334155; margin-bottom: 6px; }
+        .form-control, .form-select { border-radius: 10px; padding: 10px 14px; border: 1px solid #e2e8f0; font-size: 0.9rem; }
+        .form-control:focus, .form-select:focus { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
+        .btn-register { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 10px; padding: 12px; font-weight: 600; width: 100%; }
+        .btn-register:hover { transform: translateY(-1px); box-shadow: 0 10px 20px -10px rgba(16,185,129,0.5); color: white; }
+        .step-indicator { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
+        .step { width: 40px; height: 4px; border-radius: 2px; background: #e2e8f0; }
+        .step.active { background: #10b981; }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="register-card">
+                    <div class="register-header">
+                        <i class="bi bi-person-workspace" style="font-size: 2.5rem;"></i>
+                        <h3 class="mt-2 mb-1 fw-bold">Cadastro de Professor</h3>
+                        <p class="mb-0 opacity-75">Preencha seus dados para se cadastrar</p>
+                    </div>
+                    <div class="register-body">
+                        <div class="step-indicator">
+                            <div class="step active"></div>
+                            <div class="step"></div>
+                            <div class="step"></div>
+                        </div>
+
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="border-radius: 10px;">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <!-- Foto -->
+                            <div class="text-center mb-4">
+                                <label for="fotoInput" class="photo-upload" id="photoPreview">
+                                    <i class="bi bi-camera-fill"></i>
+                                </label>
+                                <input type="file" name="foto" id="fotoInput" accept="image/*" style="display: none;" onchange="previewPhoto(this)">
+                                <small class="text-muted">Clique para adicionar foto</small>
+                            </div>
+
+                            <!-- Dados Pessoais -->
+                            <h6 class="fw-bold text-muted mb-3"><i class="bi bi-person"></i> Dados Pessoais</h6>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nome *</label>
+                                    <input type="text" name="first_name" class="form-control" placeholder="Nome" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Sobrenome *</label>
+                                    <input type="text" name="last_name" class="form-control" placeholder="Sobrenome" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">CPF *</label>
+                                    <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Data de Nascimento</label>
+                                    <input type="date" name="data_nascimento" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">E-mail</label>
+                                    <input type="email" name="email" class="form-control" placeholder="email@exemplo.com">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Telefone</label>
+                                    <input type="text" name="telefone" class="form-control" placeholder="(00) 00000-0000">
+                                </div>
+                            </div>
+
+                            <!-- Dados Profissionais -->
+                            <h6 class="fw-bold text-muted mb-3"><i class="bi bi-briefcase"></i> Dados Profissionais</h6>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Matrícula *</label>
+                                    <input type="text" name="matricula" class="form-control" placeholder="Ex: PROF001" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Formação *</label>
+                                    <input type="text" name="formacao" class="form-control" placeholder="Ex: Pedagogia" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Especialidade</label>
+                                    <input type="text" name="especialidade" class="form-control" placeholder="Ex: Matemática">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Data de Admissão *</label>
+                                    <input type="date" name="data_admissao" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-register mb-3">
+                                <i class="bi bi-check-lg"></i> Criar Minha Conta
+                            </button>
+                        </form>
+
+                        <div class="text-center">
+                            <a href="{% url 'cadastro_perfil' %}" class="text-muted text-decoration-none" style="font-size: 0.85rem;">
+                                <i class="bi bi-arrow-left"></i> Voltar e escolher outro perfil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function previewPhoto(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('photoPreview').innerHTML = '<img src="' + e.target.result + '" alt="Foto">';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}{{ disciplina.nome }} - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-journal-text"></i> {{ disciplina.nome }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-journal-text"></i> {{ disciplina.nome }}</h2>
+        <p class="page-subtitle">Carga Horária: {{ disciplina.carga_horaria }}h | Detalhes da disciplina</p>
+    </div>
+    <a href="{% url 'lista_disciplinas' %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card-modern">
+            <div class="card-header-modern">
+                <h5><i class="bi bi-info-circle"></i> Informações da Disciplina</h5>
+            </div>
+            <div class="card-body-modern">
+                <ul class="info-list">
+                    <li>
+                        <div class="info-icon"><i class="bi bi-journal-text"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Nome</div>
+                            <div class="info-value">{{ disciplina.nome }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-clock"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Carga Horária</div>
+                            <div class="info-value">{{ disciplina.carga_horaria }} horas</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-tag"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Tipo</div>
+                            <div class="info-value">
+                                {% if disciplina.obrigatoria %}
+                                <span class="badge-modern primary">Obrigatória</span>
+                                {% else %}
+                                <span class="badge-modern dark">Optativa</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-text-left"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Descrição</div>
+                            <div class="info-value">{{ disciplina.descricao|default:"Sem descrição" }}</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

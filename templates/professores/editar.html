@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}Editar Professor - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-pencil"></i> Editar Professor{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-pencil"></i> Editar Professor</h2>
+        <p class="page-subtitle">Atualize os dados de {{ professor.user.get_full_name }}</p>
+    </div>
+    <a href="{% url 'detalhe_professor' professor.pk %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card-modern mb-4">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-person"></i> Dados Pessoais</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Nome *</label>
+                                <input type="text" name="first_name" class="form-control-modern" value="{{ professor.user.first_name }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Sobrenome *</label>
+                                <input type="text" name="last_name" class="form-control-modern" value="{{ professor.user.last_name }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Matrícula *</label>
+                                <input type="text" name="matricula" class="form-control-modern" value="{{ professor.matricula }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">CPF *</label>
+                                <input type="text" name="cpf" class="form-control-modern" value="{{ professor.cpf }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">E-mail</label>
+                                <input type="email" name="email" class="form-control-modern" value="{{ professor.user.email }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Formação *</label>
+                                <input type="text" name="formacao" class="form-control-modern" value="{{ professor.formacao }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Especialidade</label>
+                                <input type="text" name="especialidade" class="form-control-modern" value="{{ professor.especialidade }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Data de Admissão *</label>
+                                <input type="date" name="data_admissao" class="form-control-modern" value="{{ professor.data_admissao|date:'Y-m-d' }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Salário (R$) *</label>
+                                <input type="number" name="salario" class="form-control-modern" step="0.01" value="{{ professor.salario }}" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-info-circle"></i> Informações</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="alert-modern warning">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>Atenção ao alterar dados profissionais.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 justify-content-end mt-4">
+        <a href="{% url 'detalhe_professor' professor.pk %}" class="btn-modern btn-outline-modern">Cancelar</a>
+        <button type="submit" class="btn-modern btn-primary-modern">
+            <i class="bi bi-check-lg"></i> Salvar Alterações
+        </button>
+    </div>
+</form>
+{% endblock %}

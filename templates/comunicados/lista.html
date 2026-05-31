@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Comunicados - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-megaphone"></i> Comunicados{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-megaphone"></i> Comunicados</h2>
+        <p class="page-subtitle">Gerencie avisos e comunicados da escola</p>
+    </div>
+    <a href="{% url 'cadastro_comunicado' %}" class="btn-modern btn-primary-modern">
+        <i class="bi bi-plus-lg"></i> Novo Comunicado
+    </a>
+</div>
+
+<div class="row g-3">
+    {% for comunicado in comunicados %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card-modern">
+            <div class="card-body-modern">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="badge-modern {% if comunicado.prioridade == 'alta' %}danger{% elif comunicado.prioridade == 'media' %}warning{% else %}info{% endif %}">
+                        {{ comunicado.get_prioridade_display }}
+                    </span>
+                    <small class="text-muted">{{ comunicado.criado_em|date:"d/m/Y" }}</small>
+                </div>
+                <h5 class="fw-bold mb-2">{{ comunicado.titulo }}</h5>
+                <p class="text-muted mb-3" style="font-size: 0.875rem;">{{ comunicado.mensagem|truncatechars:100 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        <i class="bi bi-person"></i> {{ comunicado.autor.get_full_name }}
+                    </small>
+                    <a href="{% url 'detalhe_comunicado' comunicado.pk %}" class="btn-modern btn-sm-modern btn-outline-modern">
+                        Ver mais
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="card-modern">
+            <div class="card-body-modern">
+                <div class="empty-state">
+                    <i class="bi bi-megaphone"></i>
+                    <h5>Nenhum comunicado</h5>
+                    <p>Comece criando o primeiro comunicado da escola.</p>
+                    <a href="{% url 'cadastro_comunicado' %}" class="btn-modern btn-primary-modern mt-2">
+                        <i class="bi bi-plus-lg"></i> Criar Comunicado
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

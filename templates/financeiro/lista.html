@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}Financeiro - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-cash-stack"></i> Financeiro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-cash-stack"></i> Gestão Financeira</h2>
+        <p class="page-subtitle">Controle de mensalidades e pagamentos</p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card success">
+            <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Pagos</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card warning">
+            <div class="stat-icon"><i class="bi bi-clock-fill"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Pendentes</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card danger">
+            <div class="stat-icon"><i class="bi bi-exclamation-circle-fill"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Em Atraso</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card primary">
+            <div class="stat-icon"><i class="bi bi-cash"></i></div>
+            <div class="stat-value">R$ --</div>
+            <div class="stat-label">Total Recebido</div>
+        </div>
+    </div>
+</div>
+
+<div class="card-modern">
+    <div class="card-header-modern">
+        <h5><i class="bi bi-list-ul"></i> Mensalidades</h5>
+        <div class="d-flex gap-2">
+            <select class="form-control-modern" style="width: auto;">
+                <option>Todos os status</option>
+                <option>Pendentes</option>
+                <option>Pagos</option>
+                <option>Em Atraso</option>
+            </select>
+        </div>
+    </div>
+    <div class="card-body-modern" style="padding: 0;">
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th>Aluno</th>
+                        <th>Valor</th>
+                        <th>Vencimento</th>
+                        <th>Pagamento</th>
+                        <th>Status</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mensalidade in mensalidades %}
+                    <tr>
+                        <td>
+                            <div class="fw-semibold">{{ mensalidade.aluno.user.get_full_name }}</div>
+                            <small class="text-muted">RA: {{ mensalidade.aluno.ra }}</small>
+                        </td>
+                        <td class="fw-semibold">R$ {{ mensalidade.valor|floatformat:2 }}</td>
+                        <td>{{ mensalidade.data_vencimento|date:"d/m/Y" }}</td>
+                        <td>{{ mensalidade.data_pagamento|date:"d/m/Y"|default:"-" }}</td>
+                        <td>
+                            {% if mensalidade.status == 'pago' %}
+                            <span class="badge-modern success"><span class="badge-dot"></span> Pago</span>
+                            {% elif mensalidade.status == 'pendente' %}
+                            <span class="badge-modern warning"><span class="badge-dot"></span> Pendente</span>
+                            {% elif mensalidade.status == 'atrasado' %}
+                            <span class="badge-modern danger"><span class="badge-dot"></span> Atrasado</span>
+                            {% else %}
+                            <span class="badge-modern info"><span class="badge-dot"></span> Isento</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            {% if mensalidade.status != 'pago' and mensalidade.status != 'isento' %}
+                            <a href="{% url 'registrar_pagamento' mensalidade.pk %}" class="btn-modern btn-sm-modern btn-success-modern">
+                                <i class="bi bi-check-lg"></i> Registrar Pagamento
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="bi bi-cash-stack"></i>
+                                <h5>Nenhuma mensalidade cadastrada</h5>
+                                <p>As mensalidades serão geradas automaticamente.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

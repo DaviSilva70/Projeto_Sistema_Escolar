@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}{{ turma.nome }} - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-book"></i> Detalhes da Turma{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-book"></i> {{ turma.nome }}</h2>
+        <p class="page-subtitle">{{ turma.get_nivel_display }} - {{ turma.serie }}ª Série - {{ turma.get_turno_display }}</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'editar_turma' turma.pk %}" class="btn-modern btn-warning-modern">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        <a href="{% url 'lista_turmas' %}" class="btn-modern btn-outline-modern">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card-modern mb-4">
+            <div class="card-header-modern">
+                <h5><i class="bi bi-info-circle"></i> Informações da Turma</h5>
+            </div>
+            <div class="card-body-modern">
+                <ul class="info-list">
+                    <li>
+                        <div class="info-icon"><i class="bi bi-book"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Nome</div>
+                            <div class="info-value">{{ turma.nome }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-layers"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Nível</div>
+                            <div class="info-value">{{ turma.get_nivel_display }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-hash"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Série</div>
+                            <div class="info-value">{{ turma.serie }}ª Série</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-clock"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Turno</div>
+                            <div class="info-value">{{ turma.get_turno_display }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-calendar-year"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Ano Letivo</div>
+                            <div class="info-value">{{ turma.ano_letivo }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-door-open"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Sala</div>
+                            <div class="info-value">{{ turma.sala|default:"Não definida" }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-people"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Capacidade</div>
+                            <div class="info-value">{{ turma.capacidade }} alunos</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card-modern">
+            <div class="card-header-modern">
+                <h5><i class="bi bi-people"></i> Alunos Matriculados</h5>
+            </div>
+            <div class="card-body-modern">
+                <div class="empty-state" style="padding: 24px;">
+                    <i class="bi bi-people" style="font-size: 2rem;"></i>
+                    <h5 style="font-size: 0.9rem;">Nenhum aluno matriculado</h5>
+                    <p style="font-size: 0.8rem;">Ainda não há alunos nesta turma.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

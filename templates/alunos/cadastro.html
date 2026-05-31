@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+{% block title %}Cadastrar Aluno - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-person-plus"></i> Cadastrar Aluno{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-person-plus"></i> Cadastrar Novo Aluno</h2>
+        <p class="page-subtitle">Preencha os dados abaixo para cadastrar um novo aluno</p>
+    </div>
+    <a href="{% url 'lista_alunos' %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<form method="post" id="formAluno">
+    {% csrf_token %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <!-- Dados do Aluno -->
+            <div class="card-modern mb-4">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-person"></i> Dados do Aluno</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Nome *</label>
+                                <input type="text" name="first_name" class="form-control-modern" placeholder="Nome do aluno" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Sobrenome *</label>
+                                <input type="text" name="last_name" class="form-control-modern" placeholder="Sobrenome do aluno" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">RA (Registro) *</label>
+                                <input type="text" name="ra" class="form-control-modern" placeholder="Ex: 2026001" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">CPF *</label>
+                                <input type="text" name="cpf" class="form-control-modern" placeholder="000.000.000-00" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">RG</label>
+                                <input type="text" name="rg" class="form-control-modern" placeholder="Número do RG">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Data de Nascimento *</label>
+                                <input type="date" name="data_nascimento" class="form-control-modern" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">E-mail</label>
+                                <input type="email" name="email" class="form-control-modern" placeholder="email@exemplo.com">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Telefone</label>
+                                <input type="text" name="telefone" class="form-control-modern" placeholder="(00) 00000-0000">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label-modern">Endereço</label>
+                                <textarea name="endereco" class="form-control-modern" rows="2" placeholder="Endereço completo do aluno"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dados do Responsável -->
+            <div class="card-modern mb-4">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-person-check"></i> Responsável</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="row g-3">
+                        <!-- Tipo de Responsável -->
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label-modern">Quem é o responsável? *</label>
+                                <select name="tipo_responsavel" id="tipoResponsavel" class="form-control-modern" required onchange="toggleFormResponsavel()">
+                                    <option value="">Selecione o parentesco</option>
+                                    <option value="mae">Mãe</option>
+                                    <option value="pai">Pai</option>
+                                    <option value="avo_materno">Avô Materno</option>
+                                    <option value="ava_materna">Avó Materna</option>
+                                    <option value="avo_paterno">Avô Paterno</option>
+                                    <option value="ava_paterna">Avó Paterna</option>
+                                    <option value="tio">Tio(a)</option>
+                                    <option value="irmao">Irmão(ã)</option>
+                                    <option value="tutor">Tutor(a)</option>
+                                    <option value="outro">Outro</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Formulário do Responsável (oculto inicialmente) -->
+                        <div id="formResponsavel" style="display: none; width: 100%;">
+                            <div class="alert-modern info mb-3">
+                                <i class="bi bi-info-circle-fill"></i>
+                                <span id="labelFormResponsavel">Preencha os dados do responsável</span>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label-modern">Nome Completo do Responsável *</label>
+                                        <input type="text" name="nome_responsavel" id="nomeResponsavel" class="form-control-modern" placeholder="Nome completo" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label-modern">CPF do Responsável *</label>
+                                        <input type="text" name="cpf_responsavel" id="cpfResponsavel" class="form-control-modern" placeholder="000.000.000-00" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label-modern">Telefone *</label>
+                                        <input type="text" name="telefone_responsavel" id="telefoneResponsavel" class="form-control-modern" placeholder="(00) 00000-0000" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label-modern">E-mail</label>
+                                        <input type="email" name="email_responsavel" id="emailResponsavel" class="form-control-modern" placeholder="email@exemplo.com">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label-modern">Endereço Completo *</label>
+                                        <textarea name="endereco_responsavel" id="enderecoResponsavel" class="form-control-modern" rows="2" placeholder="Rua, número, bairro, cidade, estado, CEP" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label-modern">Profissão</label>
+                                        <input type="text" name="profissao_responsavel" id="profissaoResponsavel" class="form-control-modern" placeholder="Ex: Professor, Engenheiro">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lista de Responsáveis já cadastrados -->
+                        <div id="listaResponsaveis" class="col-12">
+                            <div class="form-group">
+                                <label class="form-label-modern">Ou selecione um responsável já cadastrado:</label>
+                                <div class="d-flex flex-column gap-2" id="cardsResponsaveis">
+                                    {% for resp in responsaveis %}
+                                    <div class="card-responsavel" onclick="selecionarResponsavel({{ resp.pk }}, '{{ resp.get_tipo_display }}', '{{ resp.nome_completo }}', '{{ resp.cpf }}', '{{ resp.telefone }}', '{{ resp.endereco }}', '{{ resp.email }}', '{{ resp.profissao }}')">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="avatar" style="background: {% if resp.tipo == 'mae' %}var(--danger){% elif resp.tipo == 'pai' %}var(--primary){% else %}var(--gray-400){% endif %};">
+                                                {{ resp.nome_completo.0 }}
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold">{{ resp.nome_completo }}</div>
+                                                <small class="text-muted">{{ resp.get_tipo_display }} | CPF: {{ resp.cpf }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% empty %}
+                                    <p class="text-muted" style="font-size: 0.85rem;">Nenhum responsável cadastrado ainda. Preencha os dados acima para criar um novo.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-info-circle"></i> Informações</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="alert-modern info">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <span>Campos com * são obrigatórios.</span>
+                    </div>
+                    <ul class="info-list">
+                        <li>
+                            <div class="info-icon"><i class="bi bi-key"></i></div>
+                            <div class="info-content">
+                                <div class="info-label">RA (Registro do Aluno)</div>
+                                <div class="info-value">Número único de identificação do aluno.</div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="info-icon"><i class="bi bi-person"></i></div>
+                            <div class="info-content">
+                                <div class="info-label">Responsável</div>
+                                <div class="info-value">Selecione o parentesco e preencha os dados ou escolha um já cadastrado.</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 justify-content-end mt-4 mb-4">
+        <a href="{% url 'lista_alunos' %}" class="btn-modern btn-outline-modern">Cancelar</a>
+        <button type="submit" class="btn-modern btn-primary-modern">
+            <i class="bi bi-check-lg"></i> Cadastrar Aluno
+        </button>
+    </div>
+</form>
+
+<style>
+.card-responsavel {
+    padding: 12px 16px;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+}
+.card-responsavel:hover {
+    border-color: var(--primary);
+    background: rgba(79, 70, 229, 0.03);
+    transform: translateX(4px);
+}
+.card-responsavel.selecionado {
+    border-color: var(--primary);
+    background: rgba(79, 70, 229, 0.08);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+</style>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let responsavelSelecionado = null;
+
+function toggleFormResponsavel() {
+    const tipo = document.getElementById('tipoResponsavel').value;
+    const form = document.getElementById('formResponsavel');
+    const label = document.getElementById('labelFormResponsavel');
+
+    if (tipo) {
+        form.style.display = 'block';
+        const tipoTexto = document.getElementById('tipoResponsavel').options[document.getElementById('tipoResponsavel').selectedIndex].text;
+        label.textContent = `Preencha os dados do(a) ${tipoTexto}`;
+        responsavelSelecionado = null;
+        document.querySelectorAll('.card-responsavel').forEach(c => c.classList.remove('selecionado'));
+    } else {
+        form.style.display = 'none';
+    }
+}
+
+function selecionarResponsavel(pk, tipo, nome, cpf, telefone, endereco, email, profissao) {
+    responsavelSelecionado = pk;
+
+    document.querySelectorAll('.card-responsavel').forEach(c => c.classList.remove('selecionado'));
+    event.currentTarget.classList.add('selecionado');
+
+    // Preencher campos do formulário
+    document.getElementById('nomeResponsavel').value = nome;
+    document.getElementById('cpfResponsavel').value = cpf;
+    document.getElementById('telefoneResponsavel').value = telefone;
+    document.getElementById('enderecoResponsavel').value = endereco;
+    document.getElementById('emailResponsavel').value = email || '';
+    document.getElementById('profissaoResponsavel').value = profissao || '';
+
+    // Configurar tipo
+    const tipoSelect = document.getElementById('tipoResponsavel');
+    for (let i = 0; i < tipoSelect.options.length; i++) {
+        if (tipoSelect.options[i].text === tipo) {
+            tipoSelect.selectedIndex = i;
+            break;
+        }
+    }
+
+    // Mostrar formulário
+    toggleFormResponsavel();
+}
+</script>
+{% endblock %}

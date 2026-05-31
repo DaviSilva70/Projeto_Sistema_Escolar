@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Frequência - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-check2-square"></i> Frequência{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-check2-square"></i> Controle de Frequência</h2>
+        <p class="page-subtitle">Registre e acompanhe a frequência dos alunos</p>
+    </div>
+    <a href="{% url 'chamada' %}" class="btn-modern btn-primary-modern">
+        <i class="bi bi-clipboard-check"></i> Nova Chamada
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card success">
+            <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Presentes Hoje</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card danger">
+            <div class="stat-icon"><i class="bi bi-x-circle-fill"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Ausentes Hoje</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card warning">
+            <div class="stat-icon"><i class="bi bi-clock-fill"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Atrasados</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card info">
+            <div class="stat-icon"><i class="bi bi-percent"></i></div>
+            <div class="stat-value">--%</div>
+            <div class="stat-label">Média de Frequência</div>
+        </div>
+    </div>
+</div>
+
+<div class="card-modern">
+    <div class="card-header-modern">
+        <h5><i class="bi bi-list-ul"></i> Registros de Frequência</h5>
+    </div>
+    <div class="card-body-modern" style="padding: 0;">
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th>Aluno</th>
+                        <th>Turma</th>
+                        <th>Data</th>
+                        <th>Status</th>
+                        <th>Justificativa</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for freq in frequencias %}
+                    <tr>
+                        <td>
+                            <div class="fw-semibold">{{ freq.aluno.user.get_full_name }}</div>
+                            <small class="text-muted">RA: {{ freq.aluno.ra }}</small>
+                        </td>
+                        <td>{{ freq.turma.nome }}</td>
+                        <td>{{ freq.data|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if freq.status == 'P' %}
+                            <span class="badge-modern success"><span class="badge-dot"></span> Presente</span>
+                            {% elif freq.status == 'F' %}
+                            <span class="badge-modern danger"><span class="badge-dot"></span> Ausente</span>
+                            {% elif freq.status == 'J' %}
+                            <span class="badge-modern info"><span class="badge-dot"></span> Justificado</span>
+                            {% else %}
+                            <span class="badge-modern warning"><span class="badge-dot"></span> Atrasado</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ freq.justificativa|truncatechars:30|default:"-" }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'historico_frequencia' freq.aluno.pk %}" class="btn-icon" title="Histórico">
+                                <i class="bi bi-clock-history"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="bi bi-check2-square"></i>
+                                <h5>Nenhum registro de frequência</h5>
+                                <p>Comece registrando a chamada dos alunos.</p>
+                                <a href="{% url 'chamada' %}" class="btn-modern btn-primary-modern mt-2">
+                                    <i class="bi bi-clipboard-check"></i> Fazer Chamada
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

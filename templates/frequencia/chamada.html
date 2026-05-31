@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}Chamada - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-clipboard-check"></i> Chamada{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-clipboard-check"></i> Registro de Chamada</h2>
+        <p class="page-subtitle">Registre a presença dos alunos</p>
+    </div>
+    <a href="{% url 'lista_frequencia' %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<form method="get">
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="form-label-modern">Selecionar Turma</label>
+                <select name="turma" class="form-control-modern" onchange="this.form.submit()">
+                    <option value="">Selecione a turma</option>
+                    {% for turma in turmas %}
+                    <option value="{{ turma.pk }}" {% if turma_selecionada == turma.pk|stringformat:"d" %}selected{% endif %}>
+                        {{ turma.nome }} - {{ turma.get_turno_display }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% if alunos %}
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="turma" value="{{ turma_selecionada }}">
+    <input type="hidden" name="data" value="{% now 'Y-m-d' %}">
+
+    <div class="card-modern">
+        <div class="card-header-modern">
+            <h5><i class="bi bi-people"></i> Alunos da Turma - {% now 'd/m/Y' %}</h5>
+        </div>
+        <div class="card-body-modern" style="padding: 0;">
+            <div class="table-responsive">
+                <table class="table-modern">
+                    <thead>
+                        <tr>
+                            <th>Aluno</th>
+                            <th>RA</th>
+                            <th class="text-center">Status</th>
+                            <th>Justificativa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for aluno in alunos %}
+                        <tr>
+                            <td class="fw-semibold">{{ aluno.user.get_full_name }}</td>
+                            <td><span class="badge-modern primary">{{ aluno.ra }}</span></td>
+                            <td class="text-center">
+                                <div class="d-flex gap-2 justify-content-center">
+                                    <label class="d-flex align-items-center gap-1" style="cursor: pointer;">
+                                        <input type="radio" name="status_{{ aluno.pk }}" value="P" checked class="form-check-input">
+                                        <span class="badge-modern success">P</span>
+                                    </label>
+                                    <label class="d-flex align-items-center gap-1" style="cursor: pointer;">
+                                        <input type="radio" name="status_{{ aluno.pk }}" value="F" class="form-check-input">
+                                        <span class="badge-modern danger">F</span>
+                                    </label>
+                                    <label class="d-flex align-items-center gap-1" style="cursor: pointer;">
+                                        <input type="radio" name="status_{{ aluno.pk }}" value="J" class="form-check-input">
+                                        <span class="badge-modern info">J</span>
+                                    </label>
+                                    <label class="d-flex align-items-center gap-1" style="cursor: pointer;">
+                                        <input type="radio" name="status_{{ aluno.pk }}" value="A" class="form-check-input">
+                                        <span class="badge-modern warning">A</span>
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text" name="justificativa_{{ aluno.pk }}" class="form-control-modern" placeholder="Justificativa (se aplicável)" style="min-width: 200px;">
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 justify-content-end mt-4 mb-4">
+        <a href="{% url 'lista_frequencia' %}" class="btn-modern btn-outline-modern">Cancelar</a>
+        <button type="submit" class="btn-modern btn-success-modern">
+            <i class="bi bi-check-lg"></i> Salvar Chamada
+        </button>
+    </div>
+</form>
+{% elif turma_selecionada %}
+<div class="card-modern">
+    <div class="card-body-modern">
+        <div class="empty-state">
+            <i class="bi bi-people"></i>
+            <h5>Nenhum aluno nesta turma</h5>
+            <p>Selecione outra turma ou matricule alunos nesta turma.</p>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="card-modern">
+    <div class="card-body-modern">
+        <div class="empty-state">
+            <i class="bi bi-clipboard-check"></i>
+            <h5>Selecione uma turma</h5>
+            <p>Escolha uma turma acima para registrar a chamada.</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<style>
+.table-modern td { vertical-align: middle; }
+.form-check-input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+</style>
+{% endblock %}

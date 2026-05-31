@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Novo Comunicado - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-plus-circle"></i> Novo Comunicado{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-plus-circle"></i> Novo Comunicado</h2>
+        <p class="page-subtitle">Crie um novo comunicado para a comunidade escolar</p>
+    </div>
+    <a href="{% url 'lista_comunicados' %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-megaphone"></i> Dados do Comunicado</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label-modern">Título *</label>
+                                <input type="text" name="titulo" class="form-control-modern" placeholder="Título do comunicado" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label-modern">Mensagem *</label>
+                                <textarea name="mensagem" class="form-control-modern" rows="6" placeholder="Conteúdo do comunicado" required></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Prioridade *</label>
+                                <select name="prioridade" class="form-control-modern" required>
+                                    <option value="baixa">Baixa</option>
+                                    <option value="media" selected>Média</option>
+                                    <option value="alta">Alta</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Data de Validade</label>
+                                <input type="date" name="data_validade" class="form-control-modern">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Autor</label>
+                                <input type="text" class="form-control-modern" value="{{ user.get_full_name }}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-gear"></i> Configurações</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="form-group">
+                        <label class="form-label-modern">Destinatários</label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="para_todos" id="paraTodos" checked>
+                            <label class="form-check-label" for="paraTodos">Todos os alunos</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 justify-content-end mt-4">
+        <a href="{% url 'lista_comunicados' %}" class="btn-modern btn-outline-modern">Cancelar</a>
+        <button type="submit" class="btn-modern btn-primary-modern">
+            <i class="bi bi-send"></i> Publicar Comunicado
+        </button>
+    </div>
+</form>
+{% endblock %}

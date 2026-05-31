@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Dashboard - Sistema de Gestão Escolar{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-grid-1x2"></i> Dashboard</h2>
+        <p class="page-subtitle">Bem-vindo, {{ user.get_full_name|default:user.username }}!</p>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card primary">
+            <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+            <div class="stat-value">{{ total_alunos }}</div>
+            <div class="stat-label">Total de Alunos</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card success">
+            <div class="stat-icon"><i class="bi bi-person-workspace"></i></div>
+            <div class="stat-value">{{ total_professores }}</div>
+            <div class="stat-label">Professores</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card warning">
+            <div class="stat-icon"><i class="bi bi-book-fill"></i></div>
+            <div class="stat-value">{{ total_turmas }}</div>
+            <div class="stat-label">Turmas Ativas</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card info">
+            <div class="stat-icon"><i class="bi bi-journal-text"></i></div>
+            <div class="stat-value">{{ total_disciplinas }}</div>
+            <div class="stat-label">Disciplinas</div>
+        </div>
+    </div>
+</div>
+
+<!-- Ações Rápidas -->
+<div class="card-modern mb-4">
+    <div class="card-header-modern">
+        <h5><i class="bi bi-lightning-fill"></i> Ações Rápidas</h5>
+    </div>
+    <div class="card-body-modern">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <a href="{% url 'lista_alunos' %}" class="btn-modern btn-outline-modern w-100 py-3 flex-column">
+                    <i class="bi bi-people fs-3 mb-2"></i>
+                    <span>Alunos</span>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'lancamento_notas' %}" class="btn-modern btn-outline-modern w-100 py-3 flex-column">
+                    <i class="bi bi-clipboard-plus fs-3 mb-2"></i>
+                    <span>Lançar Notas</span>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'chamada' %}" class="btn-modern btn-outline-modern w-100 py-3 flex-column">
+                    <i class="bi bi-check2-square fs-3 mb-2"></i>
+                    <span>Chamada</span>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'admin:index' %}" class="btn-modern btn-outline-modern w-100 py-3 flex-column" target="_blank">
+                    <i class="bi bi-gear fs-3 mb-2"></i>
+                    <span>Administração</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Info Row -->
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card-modern">
+            <div class="card-header-modern">
+                <h5><i class="bi bi-info-circle"></i> Sobre o Sistema</h5>
+            </div>
+            <div class="card-body-modern">
+                <ul class="info-list">
+                    <li>
+                        <div class="info-icon"><i class="bi bi-tag"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Versão</div>
+                            <div class="info-value">1.0</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-calendar-year"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Ano Letivo</div>
+                            <div class="info-value">2026</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-database"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Banco de Dados</div>
+                            <div class="info-value">MySQL (bd_escola)</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-megaphone"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Comunicados</div>
+                            <div class="info-value">{{ total_comunicados }} publicados</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-modern">
+            <div class="card-header-modern">
+                <h5><i class="bi bi-person-circle"></i> Meu Perfil</h5>
+            </div>
+            <div class="card-body-modern">
+                <ul class="info-list">
+                    <li>
+                        <div class="info-icon"><i class="bi bi-person"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Usuário</div>
+                            <div class="info-value">{{ user.username }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-person-badge"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Nome</div>
+                            <div class="info-value">{{ user.get_full_name }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-shield"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Perfil</div>
+                            <div class="info-value">{{ user.get_tipo_display }}</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

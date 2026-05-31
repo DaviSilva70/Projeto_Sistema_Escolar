@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Agenda - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-calendar-event"></i> Agenda{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-calendar-event"></i> Agenda de Eventos</h2>
+        <p class="page-subtitle">Calendário de eventos e atividades da escola</p>
+    </div>
+    <a href="{% url 'cadastro_evento' %}" class="btn-modern btn-primary-modern">
+        <i class="bi bi-plus-lg"></i> Novo Evento
+    </a>
+</div>
+
+<div class="row g-3">
+    {% for evento in eventos %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card-modern">
+            <div class="card-body-modern">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div style="width: 4px; height: 40px; border-radius: 4px; background: {{ evento.cor }};"></div>
+                    <small class="text-muted">{{ evento.data_inicio|date:"d/m/Y" }}</small>
+                </div>
+                <h5 class="fw-bold mb-2">{{ evento.titulo }}</h5>
+                <p class="text-muted mb-3" style="font-size: 0.875rem;">{{ evento.descricao|truncatechars:80 }}</p>
+                <ul class="info-list" style="font-size: 0.8rem;">
+                    <li style="padding: 6px 0;">
+                        <div class="info-icon" style="width: 24px; height: 24px; font-size: 0.75rem;"><i class="bi bi-clock"></i></div>
+                        <div class="info-content">
+                            <div class="info-value">{{ evento.data_inicio|date:"H:i" }} - {{ evento.data_fim|date:"H:i" }}</div>
+                        </div>
+                    </li>
+                    {% if evento.local %}
+                    <li style="padding: 6px 0;">
+                        <div class="info-icon" style="width: 24px; height: 24px; font-size: 0.75rem;"><i class="bi bi-geo-alt"></i></div>
+                        <div class="info-content">
+                            <div class="info-value">{{ evento.local }}</div>
+                        </div>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="card-modern">
+            <div class="card-body-modern">
+                <div class="empty-state">
+                    <i class="bi bi-calendar-event"></i>
+                    <h5>Nenhum evento cadastrado</h5>
+                    <p>Comece adicionando eventos à agenda da escola.</p>
+                    <a href="{% url 'cadastro_evento' %}" class="btn-modern btn-primary-modern mt-2">
+                        <i class="bi bi-plus-lg"></i> Criar Evento
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

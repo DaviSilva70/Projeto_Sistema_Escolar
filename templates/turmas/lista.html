@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}Turmas - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-book"></i> Turmas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-book"></i> Gestão de Turmas</h2>
+        <p class="page-subtitle">Gerencie as turmas e séries da escola</p>
+    </div>
+    <a href="{% url 'cadastro_turma' %}" class="btn-modern btn-primary-modern">
+        <i class="bi bi-plus-lg"></i> Nova Turma
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card primary">
+            <div class="stat-icon"><i class="bi bi-book-fill"></i></div>
+            <div class="stat-value">{{ turmas.count }}</div>
+            <div class="stat-label">Total de Turmas</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card success">
+            <div class="stat-icon"><i class="bi bi-sunrise"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Manhã</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card warning">
+            <div class="stat-icon"><i class="bi bi-sunset"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Tarde</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card info">
+            <div class="stat-icon"><i class="bi bi-moon"></i></div>
+            <div class="stat-value">--</div>
+            <div class="stat-label">Noite</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    {% for turma in turmas %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card-modern">
+            <div class="card-body-modern">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="fw-bold mb-1">{{ turma.nome }}</h5>
+                        <span class="badge-modern primary">{{ turma.get_nivel_display }} - {{ turma.serie }}ª Série</span>
+                    </div>
+                    <span class="badge-modern {% if turma.turno == 'manha' %}success{% elif turma.turno == 'tarde' %}warning{% else %}info{% endif %}">
+                        {{ turma.get_turno_display }}
+                    </span>
+                </div>
+                <ul class="info-list" style="font-size: 0.85rem;">
+                    <li style="padding: 8px 0;">
+                        <div class="info-icon" style="width: 28px; height: 28px;"><i class="bi bi-calendar-year"></i></div>
+                        <div class="info-content">
+                            <div class="info-value">Ano Letivo: {{ turma.ano_letivo }}</div>
+                        </div>
+                    </li>
+                    <li style="padding: 8px 0;">
+                        <div class="info-icon" style="width: 28px; height: 28px;"><i class="bi bi-door-open"></i></div>
+                        <div class="info-content">
+                            <div class="info-value">Sala: {{ turma.sala|default:"Não definida" }}</div>
+                        </div>
+                    </li>
+                    <li style="padding: 8px 0;">
+                        <div class="info-icon" style="width: 28px; height: 28px;"><i class="bi bi-people"></i></div>
+                        <div class="info-content">
+                            <div class="info-value">Capacidade: {{ turma.capacidade }} alunos</div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="d-flex gap-2 mt-3">
+                    <a href="{% url 'detalhe_turma' turma.pk %}" class="btn-modern btn-sm-modern btn-outline-modern flex-fill">
+                        <i class="bi bi-eye"></i> Detalhes
+                    </a>
+                    <a href="{% url 'editar_turma' turma.pk %}" class="btn-modern btn-sm-modern btn-warning-modern">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="card-modern">
+            <div class="card-body-modern">
+                <div class="empty-state">
+                    <i class="bi bi-book"></i>
+                    <h5>Nenhuma turma cadastrada</h5>
+                    <p>Comece criando a primeira turma da escola.</p>
+                    <a href="{% url 'cadastro_turma' %}" class="btn-modern btn-primary-modern mt-2">
+                        <i class="bi bi-plus-lg"></i> Criar Turma
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

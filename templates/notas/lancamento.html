@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}Lançar Notas - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-plus-circle"></i> Lançar Notas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-plus-circle"></i> Lançar Notas</h2>
+        <p class="page-subtitle">Registre as notas dos alunos nas avaliações</p>
+    </div>
+    <a href="{% url 'lista_notas' %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card-modern mb-4">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-clipboard-data"></i> Dados da Avaliação</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Aluno *</label>
+                                <select name="aluno" class="form-control-modern" required>
+                                    <option value="">Selecione o aluno</option>
+                                    {% for aluno in alunos %}
+                                    <option value="{{ aluno.pk }}">{{ aluno.user.get_full_name }} - RA: {{ aluno.ra }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Disciplina *</label>
+                                <select name="disciplina" class="form-control-modern" required>
+                                    <option value="">Selecione a disciplina</option>
+                                    {% for disciplina in disciplinas %}
+                                    <option value="{{ disciplina.pk }}">{{ disciplina.nome }} ({{ disciplina.carga_horaria }}h)</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Turma *</label>
+                                <select name="turma" class="form-control-modern" required>
+                                    <option value="">Selecione a turma</option>
+                                    {% for turma in turmas %}
+                                    <option value="{{ turma.pk }}">{{ turma.nome }} - {{ turma.get_turno_display }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Bimestre *</label>
+                                <select name="bimestre" class="form-control-modern" required>
+                                    <option value="1">1º Bimestre</option>
+                                    <option value="2">2º Bimestre</option>
+                                    <option value="3">3º Bimestre</option>
+                                    <option value="4">4º Bimestre</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Tipo de Avaliação *</label>
+                                <select name="tipo_avaliacao" class="form-control-modern" required>
+                                    <option value="prova">Prova</option>
+                                    <option value="trabalho">Trabalho</option>
+                                    <option value="atividade">Atividade</option>
+                                    <option value="participacao">Participação</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Nota *</label>
+                                <input type="number" name="nota" class="form-control-modern" step="0.01" min="0" max="10" placeholder="0.00" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Peso</label>
+                                <input type="number" name="peso" class="form-control-modern" step="0.01" value="1.0" min="0.1">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Data da Avaliação *</label>
+                                <input type="date" name="data_avaliacao" class="form-control-modern" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label-modern">Observação</label>
+                                <textarea name="observacao" class="form-control-modern" rows="2" placeholder="Observações (opcional)"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-info-circle"></i> Informações</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="alert-modern info">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <span>Preencha todos os campos obrigatórios.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 justify-content-end mt-4 mb-4">
+        <a href="{% url 'lista_notas' %}" class="btn-modern btn-outline-modern">Cancelar</a>
+        <button type="submit" class="btn-modern btn-primary-modern">
+            <i class="bi bi-check-lg"></i> Lançar Nota
+        </button>
+    </div>
+</form>
+{% endblock %}

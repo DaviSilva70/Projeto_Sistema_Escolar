@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Relatório de Desempenho - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-bar-chart-line"></i> Relatório de Desempenho{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-bar-chart-line"></i> Relatório de Desempenho</h2>
+        <p class="page-subtitle">Análise do desempenho acadêmico dos alunos</p>
+    </div>
+    <a href="{% url 'dashboard_relatorios' %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="card-modern">
+    <div class="card-body-modern">
+        <div class="empty-state">
+            <i class="bi bi-bar-chart-line"></i>
+            <h5>Relatório em construção</h5>
+            <p>Este relatório será implementado com gráficos e estatísticas detalhadas.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

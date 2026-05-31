@@ -1,0 +1,142 @@
+# ============================================
+# Gitignore - Sistema de Gestão Escolar (SGE)
+# ============================================
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+*.whl
+pip-log.txt
+pip-delete-this-directory.txt
+
+# === Virtual Environment ===
+venv/
+env/
+.venv/
+.env/
+ENV/
+
+# === Django ===
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+staticfiles/
+
+# === Environment Variables ===
+.env
+.env.local
+.env.production
+.env.staging
+
+# === IDE / Editor ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+nbproject/
+
+# === OS Files ===
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# === Backup Files ===
+*.bak
+*.backup
+*.orig
+*.save
+
+# === Logs ===
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === Coverage ===
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# === Jupyter Notebook ===
+.ipynb_checkpoints
+
+# === pyenv ===
+.python-version
+
+# === pipenv ===
+Pipfile.lock
+
+# === poetry ===
+poetry.lock
+
+# === conda ===
+environment.yml
+
+# === Database ===
+*.sqlite3
+*.sqlite3-journal
+
+# === Migrations (opcional - descomente se não quiser versionar) ===
+# */migrations/
+
+# === Media Files ===
+media/fotos/
+media/usuarios/
+media/alunos/
+media/*.jpg
+media/*.png
+media/*.gif
+media/*.jpeg
+
+# === Static Files (produção) ===
+staticfiles/
+
+# === Reports ===
+*.pdf
+*.xlsx
+*.xls
+*.csv
+
+# === Temporary Files ===
+tmp/
+temp/
+*.tmp
+*.temp
+
+# === Docker ===
+docker-compose.override.yml
+
+# === Apollo/GraphQL ===
+.schema
