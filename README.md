@@ -43,6 +43,10 @@ O **Sistema de Gestao Escolar (SGE)** e uma aplicacao web desenvolvida em Django
 - Controle de status (ativo/inativo)
 - Busca e filtros com paginacao
 - CRUD completo com validacao de formulario
+- **Gestão de Responsáveis**:
+  - Cadastro simplificado diretamente no aluno
+  - Tipos abrangentes (pai, mãe, avô/tio etc.)
+  - Controle central por CPF e vínculo escolar
 
 ### Gestao de Professores
 - Cadastro com dados profissionais
@@ -96,6 +100,11 @@ O **Sistema de Gestao Escolar (SGE)** e uma aplicacao web desenvolvida em Django
 - Categorias: Aula, Tutorial, Palestra, Documentario, Animacao
 - Vinculacao com disciplina e turmas
 - Player incorporado (iframe)
+- ### Seção de Vídeos e Disciplinas
+  - Integração: todos associados à disciplina e turma
+  - Upload fácil: momentos didáticos
+  - Restrições (iframe seguro)
+  - Métodos formutils-disciplina-view associados (`POST`) security.py
 - Controle de ordem de exibicao
 
 ### Relatorios
