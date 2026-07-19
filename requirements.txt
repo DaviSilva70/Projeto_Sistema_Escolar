@@ -8,4 +8,5 @@ django-import-export>=3.2
 python-decouple>=3.8
 gunicorn>=21.2
 psycopg2-binary>=2.9
+mysqlclient>=2.2
 whitenoise>=6.5

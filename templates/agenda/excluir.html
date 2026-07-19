@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Excluir Evento - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-trash"></i> Excluir Evento{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-trash"></i> Excluir Evento</h2>
+        <p class="page-subtitle">Tem certeza que deseja excluir este evento?</p>
+    </div>
+    <a href="{% url 'lista_eventos' %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card-modern">
+            <div class="card-body-modern">
+                <div class="alert-modern danger mb-3">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Esta ação é <strong>irreversível</strong>.</span>
+                </div>
+                <h5>{{ evento.titulo }}</h5>
+                <p class="text-muted mb-3">{{ evento.data_inicio|date:"d/m/Y H:i" }} - {{ evento.data_fim|date:"d/m/Y H:i" }}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'lista_eventos' %}" class="btn-modern btn-outline-modern">Cancelar</a>
+                        <button type="submit" class="btn-modern btn-danger-modern">
+                            <i class="bi bi-trash"></i> Sim, Excluir
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

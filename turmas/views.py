@@ -1,62 +1,59 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db import IntegrityError
+from django.core.paginator import Paginator
 from .models import Turma
+from .forms import TurmaForm
+from core.utils.permissoes import perfil_requerido
 
 
-@login_required
+@perfil_requerido('admin', 'diretor')
 def lista_turmas(request):
-    turmas = Turma.objects.filter(ativo=True)
+    turmas_list = Turma.objects.filter(ativo=True)
+    paginator = Paginator(turmas_list, 15)
+    page_number = request.GET.get('page')
+    turmas = paginator.get_page(page_number)
     return render(request, 'turmas/lista.html', {'turmas': turmas})
 
 
-@login_required
+@perfil_requerido('admin', 'diretor')
 def cadastro_turma(request):
     if request.method == 'POST':
-        try:
-            Turma.objects.create(
-                nome=request.POST.get('nome'),
-                nivel=request.POST.get('nivel'),
-                serie=request.POST.get('serie'),
-                turno=request.POST.get('turno'),
-                ano_letivo=request.POST.get('ano_letivo'),
-                capacidade=request.POST.get('capacidade', 40),
-                sala=request.POST.get('sala', ''),
-            )
-            messages.success(request, 'Turma cadastrada com sucesso!')
-            return redirect('lista_turmas')
-
-        except Exception as e:
-            messages.error(request, f'Erro ao cadastrar turma: {str(e)}')
-
-    return render(request, 'turmas/cadastro.html')
+        form = TurmaForm(request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, 'Turma cadastrada com sucesso!')
+                return redirect('lista_turmas')
+            except IntegrityError:
+                messages.error(request, 'Erro: dados duplicados.')
+        else:
+            messages.error(request, 'Corrija os erros abaixo.')
+    else:
+        form = TurmaForm()
+    return render(request, 'turmas/cadastro.html', {'form': form})
 
 
-@login_required
+@perfil_requerido('admin', 'diretor')
 def detalhe_turma(request, pk):
     turma = get_object_or_404(Turma, pk=pk)
     return render(request, 'turmas/detalhe.html', {'turma': turma})
 
 
-@login_required
+@perfil_requerido('admin', 'diretor')
 def editar_turma(request, pk):
     turma = get_object_or_404(Turma, pk=pk)
-
     if request.method == 'POST':
-        try:
-            turma.nome = request.POST.get('nome', turma.nome)
-            turma.nivel = request.POST.get('nivel', turma.nivel)
-            turma.serie = request.POST.get('serie', turma.serie)
-            turma.turno = request.POST.get('turno', turma.turno)
-            turma.ano_letivo = request.POST.get('ano_letivo', turma.ano_letivo)
-            turma.capacidade = request.POST.get('capacidade', turma.capacidade)
-            turma.sala = request.POST.get('sala', turma.sala)
-            turma.save()
-
-            messages.success(request, 'Turma atualizada com sucesso!')
-            return redirect('detalhe_turma', pk=pk)
-
-        except Exception as e:
-            messages.error(request, f'Erro ao atualizar turma: {str(e)}')
-
-    return render(request, 'turmas/editar.html', {'turma': turma})
+        form = TurmaForm(request.POST, instance=turma)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, 'Turma atualizada com sucesso!')
+                return redirect('detalhe_turma', pk=pk)
+            except IntegrityError:
+                messages.error(request, 'Erro: dados duplicados.')
+        else:
+            messages.error(request, 'Corrija os erros abaixo.')
+    else:
+        form = TurmaForm(instance=turma)
+    return render(request, 'turmas/editar.html', {'form': form, 'turma': turma})

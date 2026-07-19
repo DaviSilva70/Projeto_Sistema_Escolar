@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Cadastrar Responsável - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-person-plus"></i> Cadastrar Responsável{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-person-plus"></i> Novo Responsável</h2>
+        <p class="page-subtitle">Preencha os dados do responsável</p>
+    </div>
+    <a href="{% url 'lista_responsaveis' %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-person-check"></i> Dados do Responsável</h5>
+                </div>
+                <div class="card-body-modern">
+                    {% if form.errors %}
+                    <div class="alert-modern danger mb-3">
+                        <i class="bi bi-exclamation-circle-fill"></i> Corrija os erros abaixo.
+                    </div>
+                    {% endif %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Parentesco *</label>
+                                {{ form.tipo }}
+                                {% if form.tipo.errors %}<small class="text-danger">{{ form.tipo.errors.0 }}</small>{% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Nome Completo *</label>
+                                {{ form.nome_completo }}
+                                {% if form.nome_completo.errors %}<small class="text-danger">{{ form.nome_completo.errors.0 }}</small>{% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">CPF *</label>
+                                {{ form.cpf }}
+                                {% if form.cpf.errors %}<small class="text-danger">{{ form.cpf.errors.0 }}</small>{% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Telefone *</label>
+                                {{ form.telefone }}
+                                {% if form.telefone.errors %}<small class="text-danger">{{ form.telefone.errors.0 }}</small>{% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">E-mail</label>
+                                {{ form.email }}
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label-modern">Endereço Completo *</label>
+                                {{ form.endereco }}
+                                {% if form.endereco.errors %}<small class="text-danger">{{ form.endereco.errors.0 }}</small>{% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label-modern">Profissão</label>
+                                {{ form.profissao }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex gap-2 justify-content-end mt-4 mb-4">
+        <a href="{% url 'lista_responsaveis' %}" class="btn-modern btn-outline-modern">Cancelar</a>
+        <button type="submit" class="btn-modern btn-primary-modern">
+            <i class="bi bi-check-lg"></i> Cadastrar Responsável
+        </button>
+    </div>
+</form>
+{% endblock %}

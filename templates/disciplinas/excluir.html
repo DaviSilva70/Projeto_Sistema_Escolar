@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Excluir Disciplina - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-trash"></i> Excluir Disciplina{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-trash"></i> Excluir Disciplina</h2>
+        <p class="page-subtitle">Tem certeza que deseja excluir esta disciplina?</p>
+    </div>
+    <a href="{% url 'lista_disciplinas' %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card-modern">
+            <div class="card-body-modern">
+                <div class="alert-modern danger mb-3">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Esta ação é <strong>irreversível</strong>.</span>
+                </div>
+                <h5>{{ disciplina.nome }}</h5>
+                <p class="text-muted mb-3">{{ disciplina.carga_horaria }}h | {% if disciplina.obrigatoria %}Obrigatória{% else %}Optativa{% endif %}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'lista_disciplinas' %}" class="btn-modern btn-outline-modern">Cancelar</a>
+                        <button type="submit" class="btn-modern btn-danger-modern">
+                            <i class="bi bi-trash"></i> Sim, Excluir
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -7,4 +7,9 @@ urlpatterns = [
     path('cadastro-publico/', views.cadastro_aluno_publico, name='cadastro_aluno_publico'),
     path('<int:pk>/', views.detalhe_aluno, name='detalhe_aluno'),
     path('<int:pk>/editar/', views.editar_aluno, name='editar_aluno'),
+    # Responsável CRUD
+    path('responsaveis/', views.lista_responsaveis, name='lista_responsaveis'),
+    path('responsaveis/cadastro/', views.cadastro_responsavel, name='cadastro_responsavel'),
+    path('responsaveis/<int:pk>/editar/', views.editar_responsavel, name='editar_responsavel'),
+    path('responsaveis/<int:pk>/excluir/', views.excluir_responsavel, name='excluir_responsavel'),
 ]

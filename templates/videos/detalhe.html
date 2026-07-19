@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}{{ video.titulo }} - Vídeos{% endblock %}
+{% block page_title %}<i class="bi bi-play-circle"></i> {{ video.titulo }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-play-circle"></i> {{ video.titulo }}</h2>
+        <p class="page-subtitle">{{ video.get_categoria_display }}{% if video.disciplina %} | {{ video.disciplina.nome }}{% endif %}</p>
+    </div>
+    <div class="d-flex gap-2">
+        {% if user.tipo == 'admin' or user.tipo == 'diretor' or video.autor == user %}
+        <a href="{% url 'editar_video' video.pk %}" class="btn-modern btn-warning-modern">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        {% endif %}
+        <a href="{% url 'lista_videos' %}" class="btn-modern btn-outline-modern">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <!-- Player do Vídeo -->
+        <div class="card-modern mb-4" style="overflow: hidden;">
+            <div style="position: relative; padding-top: 56.25%; background: #000;">
+                <iframe src="{{ video.youtube_embed_url }}"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+
+        {% if video.descricao %}
+        <div class="card-modern">
+            <div class="card-header-modern">
+                <h5><i class="bi bi-text-left"></i> Descrição</h5>
+            </div>
+            <div class="card-body-modern">
+                <p style="line-height: 1.7;">{{ video.descricao }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card-modern mb-4">
+            <div class="card-header-modern">
+                <h5><i class="bi bi-info-circle"></i> Informações</h5>
+            </div>
+            <div class="card-body-modern">
+                <ul class="info-list">
+                    <li>
+                        <div class="info-icon"><i class="bi bi-tag"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Categoria</div>
+                            <div class="info-value">{{ video.get_categoria_display }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="info-icon"><i class="bi bi-person"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Autor</div>
+                            <div class="info-value">{{ video.autor.get_full_name|default:video.autor.username }}</div>
+                        </div>
+                    </li>
+                    {% if video.disciplina %}
+                    <li>
+                        <div class="info-icon"><i class="bi bi-journal-text"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Disciplina</div>
+                            <div class="info-value">{{ video.disciplina.nome }}</div>
+                        </div>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <div class="info-icon"><i class="bi bi-calendar"></i></div>
+                        <div class="info-content">
+                            <div class="info-label">Publicado em</div>
+                            <div class="info-value">{{ video.criado_em|date:"d/m/Y" }}</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        {% if video.turmas.all %}
+        <div class="card-modern">
+            <div class="card-header-modern">
+                <h5><i class="bi bi-book"></i> Turmas</h5>
+            </div>
+            <div class="card-body-modern">
+                {% for turma in video.turmas.all %}
+                <span class="badge-modern primary mb-1">{{ turma.nome }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

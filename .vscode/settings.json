@@ -1,0 +1,14 @@
+{
+    "python.defaultInterpreterPath": "C:\\Python 3.14.5\\python.exe",
+    "python.terminal.activateEnvironment": true,
+    "python.analysis.extraPaths": ["."],
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/db.sqlite3": true,
+        "**/*.pyc": true,
+        ".git": true,
+        "venv": true,
+        "staticfiles": true
+    },
+    "editor.formatOnSave": false
+}

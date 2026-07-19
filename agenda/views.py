@@ -1,32 +1,62 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.db import IntegrityError
+from django.core.paginator import Paginator
 from .models import Evento
+from .forms import EventoForm
+from core.utils.permissoes import perfil_requerido
+from django.contrib.auth.decorators import login_required
 
 
 @login_required
 def lista_eventos(request):
     eventos = Evento.objects.all()
-    return render(request, 'agenda/lista.html', {'eventos': eventos})
+    paginator = Paginator(eventos, 15)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'agenda/lista.html', {'page_obj': page_obj})
 
 
-@login_required
+@perfil_requerido('admin', 'diretor', 'professor')
 def cadastro_evento(request):
     if request.method == 'POST':
-        try:
-            Evento.objects.create(
-                titulo=request.POST.get('titulo'),
-                descricao=request.POST.get('descricao'),
-                data_inicio=request.POST.get('data_inicio'),
-                data_fim=request.POST.get('data_fim'),
-                local=request.POST.get('local', ''),
-                responsavel=request.user,
-                cor=request.POST.get('cor', '#4f46e5'),
-            )
-            messages.success(request, 'Evento criado com sucesso!')
-            return redirect('lista_eventos')
+        form = EventoForm(request.POST)
+        if form.is_valid():
+            try:
+                evento = form.save(commit=False)
+                evento.responsavel = request.user
+                evento.save()
+                messages.success(request, 'Evento criado com sucesso!')
+                return redirect('lista_eventos')
+            except IntegrityError:
+                messages.error(request, 'Erro de integridade: evento já existente ou dados duplicados.')
+    else:
+        form = EventoForm()
+    return render(request, 'agenda/cadastro.html', {'form': form})
 
-        except Exception as e:
-            messages.error(request, f'Erro ao criar evento: {str(e)}')
 
-    return render(request, 'agenda/cadastro.html')
+@perfil_requerido('admin', 'diretor', 'professor')
+def editar_evento(request, pk):
+    evento = get_object_or_404(Evento, pk=pk)
+    if request.method == 'POST':
+        form = EventoForm(request.POST, instance=evento)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, 'Evento atualizado com sucesso!')
+                return redirect('lista_eventos')
+            except IntegrityError:
+                messages.error(request, 'Erro de integridade: dados duplicados ou conflitantes.')
+    else:
+        form = EventoForm(instance=evento)
+    return render(request, 'agenda/editar.html', {'form': form, 'evento': evento})
+
+
+@perfil_requerido('admin', 'diretor')
+def excluir_evento(request, pk):
+    evento = get_object_or_404(Evento, pk=pk)
+    if request.method == 'POST':
+        evento.delete()
+        messages.success(request, 'Evento excluído com sucesso!')
+        return redirect('lista_eventos')
+    return render(request, 'agenda/excluir.html', {'evento': evento})

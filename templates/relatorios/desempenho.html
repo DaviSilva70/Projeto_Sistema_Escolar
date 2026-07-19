@@ -8,18 +8,156 @@
         <h2><i class="bi bi-bar-chart-line"></i> Relatório de Desempenho</h2>
         <p class="page-subtitle">Análise do desempenho acadêmico dos alunos</p>
     </div>
-    <a href="{% url 'dashboard_relatorios' %}" class="btn-modern btn-outline-modern">
-        <i class="bi bi-arrow-left"></i> Voltar
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{% url 'relatorio_desempenho_pdf' %}" class="btn-modern btn-danger-modern">
+            <i class="bi bi-file-pdf"></i> Exportar PDF
+        </a>
+        <a href="{% url 'dashboard_relatorios' %}" class="btn-modern btn-outline-modern">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
 </div>
 
-<div class="card-modern">
+<!-- Filtros -->
+<div class="card-modern mb-4">
     <div class="card-body-modern">
-        <div class="empty-state">
-            <i class="bi bi-bar-chart-line"></i>
-            <h5>Relatório em construção</h5>
-            <p>Este relatório será implementado com gráficos e estatísticas detalhadas.</p>
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label-modern">Turma</label>
+                <select name="turma" class="form-control-modern">
+                    <option value="">Todas as turmas</option>
+                    {% for turma in turmas %}
+                    <option value="{{ turma.pk }}" {% if turma_selecionada == turma.pk|stringformat:"d" %}selected{% endif %}>{{ turma.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label-modern">Disciplina</label>
+                <select name="disciplina" class="form-control-modern">
+                    <option value="">Todas as disciplinas</option>
+                    {% for disc in disciplinas %}
+                    <option value="{{ disc.pk }}" {% if disciplina_selecionada == disc.pk|stringformat:"d" %}selected{% endif %}>{{ disc.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn-modern btn-primary-modern">
+                    <i class="bi bi-funnel"></i> Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card primary">
+            <div class="stat-icon"><i class="bi bi-clipboard-data"></i></div>
+            <div class="stat-value">{{ total_notas }}</div>
+            <div class="stat-label">Total de Notas</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card success">
+            <div class="stat-icon"><i class="bi bi-graph-up"></i></div>
+            <div class="stat-value">{{ media_geral }}</div>
+            <div class="stat-label">Média Geral</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card info">
+            <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+            <div class="stat-value">{{ aprovados }}</div>
+            <div class="stat-label">Notas >= 7</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card danger">
+            <div class="stat-icon"><i class="bi bi-x-circle"></i></div>
+            <div class="stat-value">{{ reprovados }}</div>
+            <div class="stat-label">Notas < 5</div>
         </div>
     </div>
 </div>
+
+<!-- Média por Disciplina -->
+{% if media_por_disciplina %}
+<div class="card-modern mb-4">
+    <div class="card-header-modern">
+        <h5><i class="bi bi-bar-chart"></i> Média por Disciplina</h5>
+    </div>
+    <div class="card-body-modern" style="padding: 0;">
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th>Disciplina</th>
+                        <th class="text-center">Média</th>
+                        <th class="text-center">Total de Notas</th>
+                        <th class="text-center">Situação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in media_por_disciplina %}
+                    <tr>
+                        <td class="fw-semibold">{{ item.disciplina__nome }}</td>
+                        <td class="text-center fw-bold {% if item.media >= 7 %}text-success{% elif item.media >= 5 %}text-warning{% else %}text-danger{% endif %}">
+                            {{ item.media|floatformat:2 }}
+                        </td>
+                        <td class="text-center">{{ item.total }}</td>
+                        <td class="text-center">
+                            {% if item.media >= 7 %}
+                            <span class="badge-modern success">Aprovado</span>
+                            {% elif item.media >= 5 %}
+                            <span class="badge-modern warning">Recuperação</span>
+                            {% else %}
+                            <span class="badge-modern danger">Reprovado</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Ranking de Alunos -->
+{% if media_por_aluno %}
+<div class="card-modern mb-4">
+    <div class="card-header-modern">
+        <h5><i class="bi bi-trophy"></i> Ranking de Alunos (Maior Média)</h5>
+    </div>
+    <div class="card-body-modern" style="padding: 0;">
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Aluno</th>
+                        <th>RA</th>
+                        <th class="text-center">Média</th>
+                        <th class="text-center">Notas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in media_por_aluno %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td class="fw-semibold">{{ item.aluno__user__first_name }} {{ item.aluno__user__last_name }}</td>
+                        <td>{{ item.aluno__ra }}</td>
+                        <td class="text-center fw-bold {% if item.media >= 7 %}text-success{% elif item.media >= 5 %}text-warning{% else %}text-danger{% endif %}">
+                            {{ item.media|floatformat:2 }}
+                        </td>
+                        <td class="text-center">{{ item.total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}

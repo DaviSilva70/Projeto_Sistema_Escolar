@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Editar Mensalidade - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-pencil"></i> Editar Mensalidade{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-pencil"></i> Editar Mensalidade</h2>
+        <p class="page-subtitle">{{ mensalidade.aluno }} - {{ mensalidade.get_status_display }}</p>
+    </div>
+    <a href="{% url 'lista_mensalidades' %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-cash-stack"></i> Dados da Mensalidade</h5>
+                </div>
+                <div class="card-body-modern">
+                    {% if form.errors %}
+                    <div class="alert-modern danger mb-3">
+                        <i class="bi bi-exclamation-circle-fill"></i> Corrija os erros abaixo.
+                    </div>
+                    {% endif %}
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label class="form-label-modern">Aluno *</label>
+                                {{ form.aluno }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Status</label>
+                                {{ form.status }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Valor (R$) *</label>
+                                {{ form.valor }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Desconto (R$)</label>
+                                {{ form.desconto }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label-modern">Data de Vencimento *</label>
+                                {{ form.data_vencimento }}
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label-modern">Observação</label>
+                                {{ form.observacao }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex gap-2 justify-content-end mt-4 mb-4">
+        <a href="{% url 'lista_mensalidades' %}" class="btn-modern btn-outline-modern">Cancelar</a>
+        <button type="submit" class="btn-modern btn-primary-modern">
+            <i class="bi bi-check-lg"></i> Salvar Alterações
+        </button>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Responsáveis - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-person-check"></i> Responsáveis{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-person-check"></i> Gestão de Responsáveis</h2>
+        <p class="page-subtitle">Gerencie os responsáveis pelos alunos</p>
+    </div>
+    <a href="{% url 'cadastro_responsavel' %}" class="btn-modern btn-primary-modern">
+        <i class="bi bi-plus-lg"></i> Novo Responsável
+    </a>
+</div>
+
+<div class="card-modern">
+    <div class="card-header-modern">
+        <h5><i class="bi bi-list-ul"></i> Responsáveis Cadastrados</h5>
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" id="searchInput" class="form-control-modern" placeholder="Buscar responsável..." onkeyup="filtrarTabela()">
+        </div>
+    </div>
+    <div class="card-body-modern" style="padding: 0;">
+        <div class="table-responsive">
+            <table class="table-modern" id="tabelaResponsaveis">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Parentesco</th>
+                        <th>CPF</th>
+                        <th>Telefone</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resp in responsaveis %}
+                    <tr>
+                        <td class="fw-semibold">{{ resp.nome_completo }}</td>
+                        <td><span class="badge-modern primary">{{ resp.get_tipo_display }}</span></td>
+                        <td>{{ resp.cpf }}</td>
+                        <td>{{ resp.telefone }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'editar_responsavel' resp.pk %}" class="btn-icon" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'excluir_responsavel' resp.pk %}" class="btn-icon danger" title="Excluir">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="bi bi-person-check"></i>
+                                <h5>Nenhum responsável cadastrado</h5>
+                                <p>Cadastre o primeiro responsável.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% if responsaveis.has_other_pages %}
+<div class="pagination-modern mt-4">
+    <div class="pagination-info">Página {{ responsaveis.number }} de {{ responsaveis.paginator.num_pages }}</div>
+    <div class="pagination-buttons">
+        {% if responsaveis.has_previous %}
+        <a href="?page={{ responsaveis.previous_page_number }}" class="btn-page"><i class="bi bi-chevron-left"></i></a>
+        {% endif %}
+        {% for num in responsaveis.paginator.page_range %}
+        <a href="?page={{ num }}" class="btn-page {% if responsaveis.number == num %}active{% endif %}">{{ num }}</a>
+        {% endfor %}
+        {% if responsaveis.has_next %}
+        <a href="?page={{ responsaveis.next_page_number }}" class="btn-page"><i class="bi bi-chevron-right"></i></a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filtrarTabela() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#tabelaResponsaveis tbody tr');
+    rows.forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(input) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

@@ -10,47 +10,86 @@
     </div>
 </div>
 
+<!-- Stats Gerais -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
         <div class="stat-card primary">
             <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
-            <div class="stat-value">--</div>
+            <div class="stat-value">{{ total_alunos }}</div>
             <div class="stat-label">Total de Alunos</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-card success">
             <div class="stat-icon"><i class="bi bi-person-workspace"></i></div>
-            <div class="stat-value">--</div>
+            <div class="stat-value">{{ total_professores }}</div>
             <div class="stat-label">Total de Professores</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-card warning">
             <div class="stat-icon"><i class="bi bi-book-fill"></i></div>
-            <div class="stat-value">--</div>
+            <div class="stat-value">{{ total_turmas }}</div>
             <div class="stat-label">Total de Turmas</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-card info">
             <div class="stat-icon"><i class="bi bi-journal-text"></i></div>
-            <div class="stat-value">--</div>
+            <div class="stat-value">{{ total_disciplinas }}</div>
             <div class="stat-label">Total de Disciplinas</div>
         </div>
     </div>
 </div>
 
+<!-- Stats Acadêmicas -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card secondary">
+            <div class="stat-icon"><i class="bi bi-clipboard-data"></i></div>
+            <div class="stat-value">{{ total_notas }}</div>
+            <div class="stat-label">Notas Lançadas</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card primary">
+            <div class="stat-icon"><i class="bi bi-graph-up"></i></div>
+            <div class="stat-value">{{ media_geral|floatformat:1 }}</div>
+            <div class="stat-label">Média Geral</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card danger">
+            <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
+            <div class="stat-value">{{ mensalidades_pendentes }}</div>
+            <div class="stat-label">Mensalidades Pendentes</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card warning">
+            <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
+            <div class="stat-value">{{ mensalidades_atrasadas }}</div>
+            <div class="stat-label">Mensalidades Atrasadas</div>
+        </div>
+    </div>
+</div>
+
+<!-- Relatórios Disponíveis -->
 <div class="row g-3">
     <div class="col-md-6">
         <div class="card-modern">
             <div class="card-body-modern text-center py-5">
                 <i class="bi bi-bar-chart-line text-primary" style="font-size: 3rem;"></i>
                 <h5 class="mt-3">Desempenho Acadêmico</h5>
-                <p class="text-muted">Relatório de notas e desempenho dos alunos</p>
-                <a href="{% url 'relatorio_desempenho' %}" class="btn-modern btn-primary-modern">
-                    <i class="bi bi-eye"></i> Ver Relatório
-                </a>
+                <p class="text-muted">Notas, médias e situação dos alunos por disciplina</p>
+                <div class="d-flex gap-2 justify-content-center">
+                    <a href="{% url 'relatorio_desempenho' %}" class="btn-modern btn-primary-modern">
+                        <i class="bi bi-eye"></i> Ver Relatório
+                    </a>
+                    <a href="{% url 'relatorio_desempenho_pdf' %}" class="btn-modern btn-outline-modern">
+                        <i class="bi bi-file-pdf"></i> PDF
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -59,10 +98,15 @@
             <div class="card-body-modern text-center py-5">
                 <i class="bi bi-check2-square text-success" style="font-size: 3rem;"></i>
                 <h5 class="mt-3">Frequência Geral</h5>
-                <p class="text-muted">Relatório de frequência dos alunos</p>
-                <a href="{% url 'relatorio_frequencia' %}" class="btn-modern btn-success-modern">
-                    <i class="bi bi-eye"></i> Ver Relatório
-                </a>
+                <p class="text-muted">Presenças, ausências e percentual por turma</p>
+                <div class="d-flex gap-2 justify-content-center">
+                    <a href="{% url 'relatorio_frequencia' %}" class="btn-modern btn-success-modern">
+                        <i class="bi bi-eye"></i> Ver Relatório
+                    </a>
+                    <a href="{% url 'relatorio_frequencia_pdf' %}" class="btn-modern btn-outline-modern">
+                        <i class="bi bi-file-pdf"></i> PDF
+                    </a>
+                </div>
             </div>
         </div>
     </div>

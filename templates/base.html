@@ -68,7 +68,11 @@
                     <i class="bi bi-calendar-event"></i> Agenda
                 </a>
                 {% endif %}
-            </div>
+                <!-- Vídeos: todos podem ver -->
+                <a class="nav-link-sidebar {% if 'video' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'lista_videos' %}">
+                    <i class="bi bi-play-circle"></i> Vídeos
+                </a>
+             </div>
 
             <!-- Administração - Apenas Admin e Diretor -->
             {% if user.tipo == 'admin' or user.tipo == 'diretor' %}
@@ -140,7 +144,7 @@
             {% for message in messages %}
             <div class="alert-modern {{ message.tags }}">
                 <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill{% elif message.tags == 'danger' %}bi-exclamation-circle-fill{% elif message.tags == 'warning' %}bi-exclamation-triangle-fill{% else %}bi-info-circle-fill{% endif %}"></i>
-                <span>{{ message }}</span>
+                <span>{{ message|safe }}</span>
                 <button type="button" class="btn-close ms-auto" onclick="this.parentElement.remove()" style="font-size: 0.7rem;"></button>
             </div>
             {% endfor %}

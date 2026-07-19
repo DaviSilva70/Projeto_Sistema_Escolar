@@ -1,49 +1,42 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db import IntegrityError
+from django.core.paginator import Paginator
 from .models import Nota
+from .forms import NotaForm
 from alunos.models import Aluno
+from core.utils.permissoes import perfil_requerido
 
 
-@login_required
+@perfil_requerido('admin', 'diretor', 'professor')
 def lista_notas(request):
-    notas = Nota.objects.all()
+    notas_list = Nota.objects.all()
+    paginator = Paginator(notas_list, 15)
+    page_number = request.GET.get('page')
+    notas = paginator.get_page(page_number)
     return render(request, 'notas/lista.html', {'notas': notas})
 
 
-@login_required
+@perfil_requerido('admin', 'diretor', 'professor')
 def lancamento_notas(request):
     if request.method == 'POST':
-        try:
-            Nota.objects.create(
-                aluno_id=request.POST.get('aluno'),
-                disciplina_id=request.POST.get('disciplina'),
-                turma_id=request.POST.get('turma'),
-                bimestre=request.POST.get('bimestre'),
-                tipo_avaliacao=request.POST.get('tipo_avaliacao'),
-                nota=request.POST.get('nota'),
-                peso=request.POST.get('peso', 1.0),
-                data_avaliacao=request.POST.get('data_avaliacao'),
-                observacao=request.POST.get('observacao', ''),
-            )
-            messages.success(request, 'Nota lançada com sucesso!')
-            return redirect('lista_notas')
-
-        except Exception as e:
-            messages.error(request, f'Erro ao lançar nota: {str(e)}')
-
-    from alunos.models import Aluno
-    from disciplinas.models import Disciplina
-    from turmas.models import Turma
-
-    return render(request, 'notas/lancamento.html', {
-        'alunos': Aluno.objects.filter(ativo=True),
-        'disciplinas': Disciplina.objects.filter(ativo=True),
-        'turmas': Turma.objects.filter(ativo=True),
-    })
+        form = NotaForm(request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, 'Nota lançada com sucesso!')
+                return redirect('lista_notas')
+            except IntegrityError:
+                messages.error(
+                    request,
+                    'Já existe uma nota para este aluno, disciplina, bimestre e tipo de avaliação.',
+                )
+    else:
+        form = NotaForm()
+    return render(request, 'notas/lancamento.html', {'form': form})
 
 
-@login_required
+@perfil_requerido('admin', 'diretor', 'professor')
 def boletim_aluno(request, aluno_pk):
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
     notas = Nota.objects.filter(aluno=aluno)

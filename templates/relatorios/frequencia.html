@@ -8,17 +8,132 @@
         <h2><i class="bi bi-check2-square"></i> Relatório de Frequência</h2>
         <p class="page-subtitle">Análise da frequência dos alunos</p>
     </div>
-    <a href="{% url 'dashboard_relatorios' %}" class="btn-modern btn-outline-modern">
-        <i class="bi bi-arrow-left"></i> Voltar
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{% url 'relatorio_frequencia_pdf' %}" class="btn-modern btn-danger-modern">
+            <i class="bi bi-file-pdf"></i> Exportar PDF
+        </a>
+        <a href="{% url 'dashboard_relatorios' %}" class="btn-modern btn-outline-modern">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
 </div>
 
-<div class="card-modern">
+<!-- Filtros -->
+<div class="card-modern mb-4">
     <div class="card-body-modern">
-        <div class="empty-state">
-            <i class="bi bi-check2-square"></i>
-            <h5>Relatório em construção</h5>
-            <p>Este relatório será implementado com gráficos de frequência por turma e aluno.</p>
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label-modern">Turma</label>
+                <select name="turma" class="form-control-modern">
+                    <option value="">Todas as turmas</option>
+                    {% for turma in turmas %}
+                    <option value="{{ turma.pk }}" {% if turma_selecionada == turma.pk|stringformat:"d" %}selected{% endif %}>{{ turma.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn-modern btn-primary-modern">
+                    <i class="bi bi-funnel"></i> Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card primary">
+            <div class="stat-icon"><i class="bi bi-list-check"></i></div>
+            <div class="stat-value">{{ total }}</div>
+            <div class="stat-label">Total de Registros</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card success">
+            <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+            <div class="stat-value">{{ presentes }}</div>
+            <div class="stat-label">Presenças</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card danger">
+            <div class="stat-icon"><i class="bi bi-x-circle"></i></div>
+            <div class="stat-value">{{ ausentes }}</div>
+            <div class="stat-label">Ausências</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card info">
+            <div class="stat-icon"><i class="bi bi-percent"></i></div>
+            <div class="stat-value">{{ percentual_presenca }}%</div>
+            <div class="stat-label">Percentual de Presença</div>
+        </div>
+    </div>
+</div>
+
+<!-- Frequência por Turma -->
+{% if frequencia_por_turma %}
+<div class="card-modern mb-4">
+    <div class="card-header-modern">
+        <h5><i class="bi bi-bar-chart"></i> Frequência por Turma</h5>
+    </div>
+    <div class="card-body-modern" style="padding: 0;">
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th>Turma</th>
+                        <th class="text-center">Total</th>
+                        <th class="text-center">Presenças</th>
+                        <th class="text-center">% Presença</th>
+                        <th class="text-center">Situação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in frequencia_por_turma %}
+                    {% widthratio item.presentes item.total 100 as pct %}
+                    <tr>
+                        <td class="fw-semibold">{{ item.turma__nome }}</td>
+                        <td class="text-center">{{ item.total }}</td>
+                        <td class="text-center">{{ item.presentes }}</td>
+                        <td class="text-center fw-bold">
+                            {% widthratio item.presentes item.total 100 as percent %}
+                            {{ percent }}%
+                        </td>
+                        <td class="text-center">
+                            {% widthratio item.presentes item.total 100 as pct_val %}
+                            {% if pct_val|add:"0" >= 75 %}
+                            <span class="badge-modern success">Bom</span>
+                            {% elif pct_val|add:"0" >= 50 %}
+                            <span class="badge-modern warning">Regular</span>
+                            {% else %}
+                            <span class="badge-modern danger">Crítico</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Detalhes -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card success">
+            <div class="stat-icon"><i class="bi bi-clock"></i></div>
+            <div class="stat-value">{{ atrasados }}</div>
+            <div class="stat-label">Atrasados</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card warning">
+            <div class="stat-icon"><i class="bi bi-journal-check"></i></div>
+            <div class="stat-value">{{ justificados }}</div>
+            <div class="stat-label">Justificados</div>
         </div>
     </div>
 </div>

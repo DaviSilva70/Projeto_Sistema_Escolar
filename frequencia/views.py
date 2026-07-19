@@ -1,33 +1,39 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db import IntegrityError
+from django.core.paginator import Paginator
 from .models import Frequencia
+from .forms import FrequenciaForm
 from alunos.models import Aluno
 from turmas.models import Turma, TurmaAluno
+from core.utils.permissoes import perfil_requerido
 
 
-@login_required
+@perfil_requerido('admin', 'diretor', 'professor')
 def lista_frequencia(request):
-    frequencias = Frequencia.objects.all()
+    frequencias_list = Frequencia.objects.all()
+    paginator = Paginator(frequencias_list, 15)
+    page_number = request.GET.get('page')
+    frequencias = paginator.get_page(page_number)
     return render(request, 'frequencia/lista.html', {'frequencias': frequencias})
 
 
-@login_required
+@perfil_requerido('admin', 'diretor', 'professor')
 def chamada(request):
     if request.method == 'POST':
-        try:
-            turma_id = request.POST.get('turma')
-            data = request.POST.get('data')
+        turma_id = request.POST.get('turma')
+        data = request.POST.get('data')
 
-            # Buscar alunos vinculados à turma via TurmaAluno
-            alunos_vinculados = Aluno.objects.filter(
-                turmaaluno__turma_id=turma_id, ativo=True
-            )
+        alunos_vinculados = Aluno.objects.filter(
+            turmaaluno__turma_id=turma_id, ativo=True
+        )
 
-            for aluno in alunos_vinculados:
-                status = request.POST.get(f'status_{aluno.pk}', 'P')
-                justificativa = request.POST.get(f'justificativa_{aluno.pk}', '')
+        erros = []
+        for aluno in alunos_vinculados:
+            status = request.POST.get(f'status_{aluno.pk}', 'P')
+            justificativa = request.POST.get(f'justificativa_{aluno.pk}', '')
 
+            try:
                 Frequencia.objects.create(
                     aluno=aluno,
                     turma_id=turma_id,
@@ -36,19 +42,23 @@ def chamada(request):
                     justificativa=justificativa,
                     registrado_por=request.user,
                 )
+            except IntegrityError:
+                erros.append(aluno.user.get_full_name() or str(aluno))
 
+        if erros:
+            nomes = ', '.join(erros)
+            messages.warning(
+                request,
+                f'Registros ignorados (já existentes): {nomes}',
+            )
+        if len(erros) < len(alunos_vinculados):
             messages.success(request, 'Chamada registrada com sucesso!')
-            return redirect('lista_frequencia')
-
-        except Exception as e:
-            messages.error(request, f'Erro ao registrar chamada: {str(e)}')
+        return redirect('lista_frequencia')
 
     turmas = Turma.objects.filter(ativo=True)
     alunos = []
-
     turma_id = request.GET.get('turma')
     if turma_id:
-        # Buscar alunos vinculados à turma via TurmaAluno
         alunos = Aluno.objects.filter(
             turmaaluno__turma_id=turma_id, ativo=True
         ).select_related('user')
@@ -60,8 +70,14 @@ def chamada(request):
     })
 
 
-@login_required
+@perfil_requerido('admin', 'diretor', 'professor')
 def historico_frequencia(request, aluno_pk):
     aluno = get_object_or_404(Aluno, pk=aluno_pk)
-    frequencias = Frequencia.objects.filter(aluno=aluno)
-    return render(request, 'frequencia/historico.html', {'aluno': aluno, 'frequencias': frequencias})
+    frequencias_list = Frequencia.objects.filter(aluno=aluno)
+    paginator = Paginator(frequencias_list, 15)
+    page_number = request.GET.get('page')
+    frequencias = paginator.get_page(page_number)
+    return render(request, 'frequencia/historico.html', {
+        'aluno': aluno,
+        'frequencias': frequencias,
+    })

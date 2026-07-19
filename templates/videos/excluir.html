@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Excluir Vídeo - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-trash"></i> Excluir Vídeo{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-trash"></i> Excluir Vídeo</h2>
+        <p class="page-subtitle">Tem certeza que deseja excluir este vídeo?</p>
+    </div>
+    <a href="{% url 'detalhe_video' video.pk %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card-modern">
+            <div class="card-body-modern">
+                <div class="alert-modern danger mb-3">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Esta ação é <strong>irreversível</strong>. O vídeo será removido permanentemente.</span>
+                </div>
+                <h5>{{ video.titulo }}</h5>
+                <p class="text-muted mb-3">{{ video.get_categoria_display }} | {{ video.autor.get_full_name }}</p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'detalhe_video' video.pk %}" class="btn-modern btn-outline-modern">Cancelar</a>
+                        <button type="submit" class="btn-modern btn-danger-modern">
+                            <i class="bi bi-trash"></i> Sim, Excluir
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

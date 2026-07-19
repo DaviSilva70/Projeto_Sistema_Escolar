@@ -33,6 +33,7 @@ urlpatterns = [
     path('comunicados/', include('comunicados.urls')),
     path('relatorios/', include('relatorios.urls')),
     path('agenda/', include('agenda.urls')),
+    path('videos/', include('videos.urls')),
 ]
 
 # Servir arquivos estáticos e de mídia em desenvolvimento

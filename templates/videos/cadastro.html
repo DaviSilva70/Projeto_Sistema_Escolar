@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Cadastrar Vídeo - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-plus-circle"></i> Cadastrar Vídeo{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-plus-circle"></i> Novo Vídeo</h2>
+        <p class="page-subtitle">Adicione um vídeo à biblioteca educacional</p>
+    </div>
+    <a href="{% url 'lista_videos' %}" class="btn-modern btn-outline-modern">
+        <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card-modern mb-4">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-play-circle"></i> Dados do Vídeo</h5>
+                </div>
+                <div class="card-body-modern">
+                    {% if form.errors %}
+                    <div class="alert-modern danger mb-3">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        Corrija os erros abaixo.
+                    </div>
+                    {% endif %}
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label-modern">Título do Vídeo *</label>
+                                {{ form.titulo }}
+                                {% if form.titulo.errors %}<small class="text-danger">{{ form.titulo.errors.0 }}</small>{% endif %}
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label-modern">URL do Vídeo *</label>
+                                {{ form.url }}
+                                <small class="text-muted">Cole a URL do YouTube ou Vimeo</small>
+                                {% if form.url.errors %}<small class="text-danger">{{ form.url.errors.0 }}</small>{% endif %}
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label-modern">Descrição</label>
+                                {{ form.descricao }}
+                                {% if form.descricao.errors %}<small class="text-danger">{{ form.descricao.errors.0 }}</small>{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card-modern mb-4">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-gear"></i> Configurações</h5>
+                </div>
+                <div class="card-body-modern">
+                    <div class="form-group">
+                        <label class="form-label-modern">Categoria</label>
+                        {{ form.categoria }}
+                        {% if form.categoria.errors %}<small class="text-danger">{{ form.categoria.errors.0 }}</small>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label-modern">Disciplina</label>
+                        {{ form.disciplina }}
+                        {% if form.disciplina.errors %}<small class="text-danger">{{ form.disciplina.errors.0 }}</small>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label-modern">Ordem de Exibição</label>
+                        {{ form.ordem }}
+                        {% if form.ordem.errors %}<small class="text-danger">{{ form.ordem.errors.0 }}</small>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label-modern">Status</label>
+                        <div class="form-check form-switch">
+                            {{ form.ativo }}
+                            <label class="form-check-label" for="id_ativo">Ativo</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-modern">
+                <div class="card-header-modern">
+                    <h5><i class="bi bi-book"></i> Turmas</h5>
+                </div>
+                <div class="card-body-modern">
+                    {{ form.turmas }}
+                    {% if form.turmas.errors %}<small class="text-danger">{{ form.turmas.errors.0 }}</small>{% endif %}
+                    <small class="text-muted">Selecione as turmas que terão acesso</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 justify-content-end mt-4 mb-4">
+        <a href="{% url 'lista_videos' %}" class="btn-modern btn-outline-modern">Cancelar</a>
+        <button type="submit" class="btn-modern btn-primary-modern">
+            <i class="bi bi-check-lg"></i> Cadastrar Vídeo
+        </button>
+    </div>
+</form>
+{% endblock %}

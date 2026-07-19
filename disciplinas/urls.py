@@ -5,4 +5,6 @@ urlpatterns = [
     path('', views.lista_disciplinas, name='lista_disciplinas'),
     path('cadastro/', views.cadastro_disciplina, name='cadastro_disciplina'),
     path('<int:pk>/', views.detalhe_disciplina, name='detalhe_disciplina'),
+    path('<int:pk>/editar/', views.editar_disciplina, name='editar_disciplina'),
+    path('<int:pk>/excluir/', views.excluir_disciplina, name='excluir_disciplina'),
 ]

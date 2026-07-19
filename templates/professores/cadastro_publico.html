@@ -48,7 +48,7 @@
                         {% if messages %}
                         {% for message in messages %}
                         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="border-radius: 10px;">
-                            {{ message }}
+                            {{ message|safe }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                         {% endfor %}
@@ -105,6 +105,10 @@
                                 <div class="col-md-6">
                                     <label class="form-label">Formação *</label>
                                     <input type="text" name="formacao" class="form-control" placeholder="Ex: Pedagogia" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Salário (R$) *</label>
+                                    <input type="number" name="salario" class="form-control" step="0.01" placeholder="0.00" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Especialidade</label>

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Vídeos - Sistema Escolar{% endblock %}
+{% block page_title %}<i class="bi bi-play-circle"></i> Vídeos{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-play-circle"></i> Biblioteca de Vídeos</h2>
+        <p class="page-subtitle">Assista aulas, tutoriais e conteúdos educacionais</p>
+    </div>
+    {% if user.tipo == 'admin' or user.tipo == 'diretor' or user.tipo == 'professor' %}
+    <a href="{% url 'cadastro_video' %}" class="btn-modern btn-primary-modern">
+        <i class="bi bi-plus-lg"></i> Novo Vídeo
+    </a>
+    {% endif %}
+</div>
+
+<!-- Filtros -->
+<div class="filters-bar mb-4">
+    <a href="?filtro=todos" class="filter-chip {% if not filtro %}active{% endif %}">Todos</a>
+    <a href="?filtro=aula" class="filter-chip {% if filtro == 'aula' %}active{% endif %}">Aulas</a>
+    <a href="?filtro=tutorial" class="filter-chip {% if filtro == 'tutorial' %}active{% endif %}">Tutoriais</a>
+    <a href="?filtro=palestra" class="filter-chip {% if filtro == 'palestra' %}active{% endif %}">Palestras</a>
+    <a href="?filtro=documentario" class="filter-chip {% if filtro == 'documentario' %}active{% endif %}">Documentários</a>
+    <a href="?filtro=outro" class="filter-chip {% if filtro == 'outro' %}active{% endif %}">Outros</a>
+</div>
+
+<!-- Grid de Vídeos -->
+<div class="row g-4">
+    {% for video in videos %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card-modern" style="overflow: hidden;">
+            <!-- Thumbnail do vídeo -->
+            <div style="position: relative; padding-top: 56.25%; background: #000; border-radius: var(--radius) var(--radius) 0 0;">
+                <iframe src="{{ video.youtube_embed_url }}"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <div class="card-body-modern">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="mb-0" style="font-size: 0.95rem; font-weight: 600;">{{ video.titulo }}</h5>
+                    <span class="badge-modern primary" style="font-size: 0.7rem;">{{ video.get_categoria_display }}</span>
+                </div>
+                {% if video.descricao %}
+                <p class="text-muted mb-2" style="font-size: 0.8rem; line-height: 1.4;">{{ video.descricao|truncatewords:20 }}</p>
+                {% endif %}
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        <i class="bi bi-person"></i> {{ video.autor.get_full_name|default:video.autor.username }}
+                    </small>
+                    <a href="{% url 'detalhe_video' video.pk %}" class="btn-modern btn-sm-modern btn-outline-modern">
+                        <i class="bi bi-eye"></i> Ver
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="card-modern">
+            <div class="card-body-modern">
+                <div class="empty-state">
+                    <i class="bi bi-play-circle"></i>
+                    <h5>Nenhum vídeo disponível</h5>
+                    <p>Ainda não há vídeos cadastrados na biblioteca.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Paginação -->
+{% if videos.has_other_pages %}
+<div class="pagination-modern mt-4">
+    <div class="pagination-info">
+        Página {{ videos.number }} de {{ videos.paginator.num_pages }}
+    </div>
+    <div class="pagination-buttons">
+        {% if videos.has_previous %}
+        <a href="?page={{ videos.previous_page_number }}" class="btn-page">
+            <i class="bi bi-chevron-left"></i>
+        </a>
+        {% endif %}
+        {% for num in videos.paginator.page_range %}
+        <a href="?page={{ num }}" class="btn-page {% if videos.number == num %}active{% endif %}">{{ num }}</a>
+        {% endfor %}
+        {% if videos.has_next %}
+        <a href="?page={{ videos.next_page_number }}" class="btn-page">
+            <i class="bi bi-chevron-right"></i>
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
